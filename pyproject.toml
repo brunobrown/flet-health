@@ -1,0 +1,51 @@
+[project]
+name = "flet-health"
+version = "0.1.52"
+description = "FletHealth control for Flet"
+requires-python = ">=3.9"
+readme = "README.md"
+authors = [
+    { name = "brunobrown", email = "brunobrown.86@gmail.com" }
+]
+license = "MIT"
+license-files = []
+
+dependencies = [
+    "flet>=0.26.0",
+]
+
+classifiers = [
+    "Topic :: Software Development :: Debuggers",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.12"
+]
+
+[project.urls]
+Homepage = "https://github.com/brunobrown/flet-health"
+#Documentation = ""
+Repository = "https://github.com/brunobrown/flet-health"
+Issues = "https://github.com/brunobrown/flet-health/issues"
+
+[tool.uv]
+dev-dependencies = [
+    "flet[all]==0.26.0",
+]
+
+[tool.poetry.group.dev.dependencies]
+flet = {extras = ["all"], version = "0.26.0"}
+
+#[tool.setuptools]
+#packages = ["flet_health"]
+#package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"flutter.flet_health" = ["**/*"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+

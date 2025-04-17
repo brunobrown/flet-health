@@ -1,0 +1,22 @@
+[project]
+name = "flet-health-example"
+version = "0.1.0"
+description = "flet-health-example"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "developer", email = "you@example.com" }
+]
+
+dependencies = [
+  "flet-health @ file:///home/bruno_brown/PycharmProjects/flet-health",
+  "flet>=0.26.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "flet[all]>=0.27.6",
+]
+
+[tool.poetry.group.dev.dependencies]
+flet = {extras = ["all"], version = "0.27.6"}
