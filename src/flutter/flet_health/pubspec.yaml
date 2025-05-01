@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   flet: ^0.27.6
-  health: ^12.1.0
+  health: ^12.2.0
   permission_handler: ^11.4.0
   flutter:
     sdk: flutter
