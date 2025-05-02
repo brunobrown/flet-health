@@ -1812,7 +1812,6 @@ class Health(Control):
 
         return result == "true"
 
-
     def delete(
             self,
             types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
@@ -1826,8 +1825,9 @@ class Health(Control):
         :param types: - the value's HealthDataType.
         :param start_time: - the start time when this [value] is measured. Must be equal to or earlier than [endTime].
         :param end_time: - the end time when this [value] is measured. Must be equal to or later than [startTime].
+        :param wait_timeout: - the timeout in seconds.
 
-        :return: True if successful, false otherwise.
+        :return: True if successful, False otherwise.
         """
 
         data = json.dumps(
@@ -1860,8 +1860,9 @@ class Health(Control):
         :param types: - the value's HealthDataType.
         :param start_time: - the start time when this [value] is measured. Must be equal to or earlier than [endTime].
         :param end_time: - the end time when this [value] is measured. Must be equal to or later than [startTime].
+        :param wait_timeout: - the timeout in seconds.
 
-        :return: True if successful, false otherwise.
+        :return: True if successful, False otherwise.
         """
 
         data = json.dumps(
@@ -1892,6 +1893,7 @@ class Health(Control):
 
         :param uuid: - The UUID of the health record to delete.
         :param types: - The health data type of the record. Required on iOS.
+        :param wait_timeout: The maximum time to wait for the method to complete.
 
         On Android, only the UUID is required. On iOS, both UUID and type are required.
 
@@ -1925,6 +1927,7 @@ class Health(Control):
 
         :param uuid: - The UUID of the health record to delete.
         :param types: - The health data type of the record. Required on iOS.
+        :param wait_timeout: The maximum time to wait for the method to complete.
 
         On Android, only the UUID is required. On iOS, both UUID and type are required.
 
