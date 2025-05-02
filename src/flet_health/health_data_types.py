@@ -399,6 +399,12 @@ class MenstrualFlow(Enum):
     SPOTTING = 'spotting'
 
 
+class InsulinDeliveryReason(Enum):
+    NOT_SET = 'NOT_SET'
+    BASAL = 'BASAL'
+    BOLUS = 'BOLUS'
+
+
 class DataAccess(Enum):
     READ = 'READ'
     WRITE = 'WRITE',

@@ -1754,6 +1754,65 @@ class Health(Control):
         )
         return result == "true"
 
+    def write_insulin_delivery(
+            self,
+            units: float,
+            reason: InsulinDeliveryReason,
+            start_time: datetime,
+            end_time: datetime,
+            wait_timeout: float = 25
+    ):
+        """
+        Saves insulin delivery record into Apple Health.
+
+        :return: True if successful, false otherwise.
+        """
+
+        data = json.dumps({
+            "units": units,
+            "reason": reason,
+            "start_time": int(start_time.timestamp() * 1000),
+            "end_time": int(end_time.timestamp() * 1000),
+        })
+
+        result = self.invoke_method(
+            method_name="write_insulin_delivery",
+            arguments={"data": data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return result == "true"
+
+    async def write_insulin_delivery_async(
+            self,
+            units: float,
+            reason: InsulinDeliveryReason,
+            start_time: datetime,
+            end_time: datetime,
+            wait_timeout: float = 25
+    ):
+        """
+        No description.
+        """
+
+        data = json.dumps({
+            "units": units,
+            "reason": reason,
+            "start_time": int(start_time.timestamp() * 1000),
+            "end_time": int(end_time.timestamp() * 1000),
+        })
+
+        result = await self.invoke_method_async(
+            method_name="write_insulin_delivery",
+            arguments={"data": data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return result == "true"
+
+
     def delete(
             self,
             types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
