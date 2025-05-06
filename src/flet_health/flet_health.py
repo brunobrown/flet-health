@@ -751,7 +751,7 @@ class Health(Control):
             wait_timeout=wait_timeout
         )
 
-        return result if result else []
+        return json.loads(result) if result else []
 
     async def get_health_aggregate_data_from_types_async(
             self,
@@ -792,7 +792,7 @@ class Health(Control):
             wait_timeout=wait_timeout
         )
 
-        return result if result else []
+        return json.loads(result) if result else []
 
     def get_health_data_from_types(
             self,
