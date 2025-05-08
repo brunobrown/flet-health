@@ -635,7 +635,7 @@ class Health(Control):
         if platform != 'android':
             return None
 
-        result = self.invoke_method(
+        result = self.invoke_method_async(
             method_name="get_health_connect_sdk_status",
             wait_for_result=True,
             wait_timeout=wait_timeout
