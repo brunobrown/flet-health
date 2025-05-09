@@ -9,5 +9,6 @@ from .flet_health import (
     Permissions,
     HealthDataUnit,
     MealType,
-    MenstrualFlow
+    MenstrualFlow,
+    HealthConnectSdkStatus
 )

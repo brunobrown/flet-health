@@ -409,3 +409,18 @@ class DataAccess(Enum):
     READ = 'READ'
     WRITE = 'WRITE',
     READ_WRITE = 'READ_WRITE'
+
+
+class HealthConnectSdkStatus(Enum):
+    SDK_UNAVAILABLE = 1
+    SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED = 2
+    SDK_AVAILABLE = 3
+
+    @classmethod
+    def from_string(cls, dart_enum_str: str) -> "HealthConnectSdkStatus":
+        mapping = {
+            "HealthConnectSdkStatus.sdkUnavailable": cls.SDK_UNAVAILABLE,
+            "HealthConnectSdkStatus.sdkUnavailableProviderUpdateRequired": cls.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED,
+            "HealthConnectSdkStatus.sdkAvailable": cls.SDK_AVAILABLE,
+        }
+        return mapping.get(dart_enum_str, cls.SDK_UNAVAILABLE)

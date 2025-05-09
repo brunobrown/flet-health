@@ -590,61 +590,70 @@ class Health(Control):
         if platform == 'android':
             self.invoke_method(method_name="install_health_connect")
 
-    def get_health_connect_sdk_status(self, wait_timeout: Optional[float] = 25) -> bool | None:
+    def get_health_connect_sdk_status(self, wait_timeout: Optional[float] = 25) -> Optional[HealthConnectSdkStatus]:
         """Checks the current status of Health Connect availability.
 
         See this for more info:
             https://developer.android.com/reference/kotlin/androidx/health/connect/client/HealthConnectClient#getSdkStatus(android.content.Context,kotlin.String)
 
-        Android only. Returns null on iOS or if an error occurs.
+        Android only. Returns None on iOS or if an error occurs.
 
-        :return: True if the SDK is available, False if not, None if platform is not Android.
+        :return: HealthConnectSdkStatus enum value, or None if not on Android or on error.
         """
 
+        platform = self.page.platform.value
+
+        if platform != 'android':
+            return HealthConnectSdkStatus.SDK_UNAVAILABLE
+
+        try:
+            result = self.invoke_method(
+                method_name="get_health_connect_sdk_status",
+                wait_for_result=True,
+                wait_timeout=wait_timeout
+            )
+
+            if isinstance(result, str):
+                return HealthConnectSdkStatus.from_string(result)
+
+            return HealthConnectSdkStatus.SDK_UNAVAILABLE
+
+        except Exception as error:
+            print(f"Exception in get_health_connect_sdk_status_async(): {error}")
+            return None
+
+    async def get_health_connect_sdk_status_async(self, wait_timeout: Optional[float] = 25) -> Optional[HealthConnectSdkStatus]:
+        """Checks the current status of Health Connect availability.
+
+        See this for more info:
+            https://developer.android.com/reference/kotlin/androidx/health/connect/client/HealthConnectClient#getSdkStatus(android.content.Context,kotlin.String)
+
+        Android only. Returns None on iOS or if an error occurs.
+
+        :return: HealthConnectSdkStatus enum value, or None if not on Android or on error.
+        """
 
         platform = self.page.platform.value
 
         if platform != 'android':
             return None
 
-        result = self.invoke_method(
-            method_name="get_health_connect_sdk_status",
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
+        try:
+            result = await self.invoke_method_async(
+                method_name="get_health_connect_sdk_status",
+                wait_for_result=True,
+                wait_timeout=wait_timeout
+            )
 
-        if result == 'HealthConnectSdkStatus.sdkAvailable':
-            return True
-        else:
-            return False
+            if isinstance(result, str):
+                return HealthConnectSdkStatus.from_string(result)
 
-    async def get_health_connect_sdk_status_async(self, wait_timeout: Optional[float] = 25) -> bool | None:
-        """Checks the current status of Health Connect availability.
+            return HealthConnectSdkStatus.SDK_UNAVAILABLE
 
-        See this for more info:
-            https://developer.android.com/reference/kotlin/androidx/health/connect/client/HealthConnectClient#getSdkStatus(android.content.Context,kotlin.String)
-
-        Android only. Returns null on iOS or if an error occurs.
-
-        :return: True if the SDK is available, False if not, None if platform is not Android.
-        """
-
-
-        platform = self.page.platform.value
-
-        if platform != 'android':
+        except Exception as error:
+            print(f"Exception in get_health_connect_sdk_status_async(): {error}")
             return None
 
-        result = self.invoke_method_async(
-            method_name="get_health_connect_sdk_status",
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
-
-        if result == 'HealthConnectSdkStatus.sdkAvailable':
-            return True
-        else:
-            return False
 
     def get_total_steps_in_interval(
             self,
