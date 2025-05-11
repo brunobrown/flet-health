@@ -467,6 +467,7 @@ class Health(Control):
         :param data_access: Optional list of 'DataAccess' corresponding to each 'type'.
                 - If 'None', the function assumes 'READ' for all types.
                 - If provided, it must have the same size as 'types', corresponding to each entry.
+        :param wait_timeout: Maximum time to wait for the permission request to complete.
 
         :return:
             - True: if all the data types have the specified permissions.
