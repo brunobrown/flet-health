@@ -250,6 +250,6 @@ Contributions and feedback are welcome!
 
 ## 🚀 Try flet-health today and integrate health data into your applications! 💪📊
 
-<img src="https://logging-discord.readthedocs.io/en/latest/img/proverbs_16_3.jpg" width="500">
+<img src="https://github.com/user-attachments/assets/431aa05f-5fbc-4daa-9689-b9723583e25a" width="500">
 
 [Commit your work to the LORD, and your plans will succeed. Proverbs 16: 3](https://www.bible.com/bible/116/PRO.16.NLT)
