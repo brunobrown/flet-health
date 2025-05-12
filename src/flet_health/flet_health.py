@@ -38,214 +38,6 @@ class Health(Control):
     def _get_control_name(self):
         return "flet_health"
 
-    def request_permission(self, permission: Permissions, wait_timeout: Optional[float] = 25) -> PermissionStatus:
-        """
-        Requests permission on devices Android 10+ (API 29+).
-
-        This method sends a request to access activity recognition data. He waits for a response indicating
-        whether permission was granted or denied
-
-        :arg permission: (Permissions): The specific activity permission to request
-        :arg wait_timeout: (Optional[float]): The maximum time (in seconds) to wait for a response. Default is 25 seconds.
-
-        :return:
-            str: The result of the permission request.
-            It can be one of the following states: "granted", "denied", or "permanentlyDenied".
-
-        :raise ValueError: If `permission` is not an instance of `Permissions`.
-        """
-
-        if not isinstance(permission, Permissions):
-            raise ValueError("'Permission' must be an instance of 'Permissions'.")
-
-        data_str = json.dumps({"permission": permission.value})
-
-        result = self.invoke_method(
-            method_name='request_permission',
-            arguments={'data': data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
-
-        return PermissionStatus(result) if result is not None else None
-
-    async def request_permission_async(self, permission: Permissions, wait_timeout: Optional[float] = 25) -> PermissionStatus:
-        """
-        Requests permission on Android devices Android 10+ (API 29+).
-
-        This method sends a request to access activity recognition data. He waits for a response indicating
-        whether permission was granted or denied
-
-        :arg permission: (Permissions): The specific activity permission to request
-        :arg wait_timeout: (Optional[float]): The maximum time (in seconds) to wait for a response. Default is 25 seconds.
-
-        :return:
-            str: The result of the permission request.
-            It can be one of the following states: "granted", "denied", or "permanentlyDenied".
-
-        :raise ValueError: If `permission` is not an instance of `Permissions`.
-        """
-
-        if not isinstance(permission, Permissions):
-            raise ValueError("'Permission' must be an instance of 'Permissions'.")
-
-        data_str = json.dumps({"permission": permission.value})
-
-        result = await self.invoke_method_async(
-            method_name='request_permission',
-            arguments={'data': data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
-
-        return PermissionStatus(result) if result is not None else None
-
-    def request_multiple_permissions(
-            self, permissions: List[Permissions], wait_timeout: Optional[float] = 25
-    ) -> dict[str, PermissionStatus]:
-        """
-        Requests multiple permissions on the device.
-
-        :param permissions: List of Permissions enums.
-        :param wait_timeout: Time to wait for result (in seconds).
-        :return: Dictionary mapping each permission to its PermissionStatus.
-        :raises ValueError: If any item is not an instance of Permissions.
-        """
-
-        if not all(isinstance(p, Permissions) for p in permissions):
-            raise ValueError("All items in 'permissions' must be instances of 'Permissions'.")
-
-        data_str = json.dumps({"permissions": [p.value for p in permissions]})
-
-        result = self.invoke_method(
-            method_name="request_multiple_permissions",
-            arguments={"data": data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-
-        if result is None:
-            return {}
-
-        result_dict = json.loads(result)
-        return {
-            perm_name: PermissionStatus(status)
-            for perm_name, status in result_dict.items()
-        }
-
-    async def request_multiple_permissions_async(
-            self, permissions: List[Permissions], wait_timeout: Optional[float] = 25
-    ) -> dict[str, PermissionStatus]:
-        """
-        Requests multiple permissions on the device.
-
-        :param permissions: List of Permissions enums.
-        :param wait_timeout: Time to wait for result (in seconds).
-        :return: Dictionary mapping each permission to its PermissionStatus.
-        :raises ValueError: If any item is not an instance of Permissions.
-        """
-
-        if not all(isinstance(p, Permissions) for p in permissions):
-            raise ValueError("All items in 'permissions' must be instances of 'Permissions'.")
-
-        data_str = json.dumps({"permissions": [p.value for p in permissions]})
-
-        result = await self.invoke_method_async(
-            method_name="request_multiple_permissions",
-            arguments={"data": data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-
-        if result is None:
-            return {}
-
-        result_dict = json.loads(result)
-        return {
-            perm_name: PermissionStatus(status)
-            for perm_name, status in result_dict.items()
-        }
-
-    def request_and_validate_permissions(
-            self, permissions: List[Permissions], wait_timeout: Optional[float] = 25
-    ) -> bool:
-        """
-        Requests multiple permissions and returns True if all are granted.
-
-        :param permissions: List of Permissions enums.
-        :param wait_timeout: Time to wait for result (in seconds).
-        :return: True if all permissions are granted, False otherwise.
-        """
-
-        statuses = self.request_multiple_permissions(
-            permissions=permissions,
-            wait_timeout=wait_timeout
-        )
-
-        return all(status == PermissionStatus.GRANTED for status in statuses.values())
-
-    async def request_and_validate_permissions_async(
-            self, permissions: List[Permissions], wait_timeout: Optional[float] = 25
-    ) -> bool:
-        """
-        Requests multiple permissions and returns True if all are granted.
-
-        :param permissions: List of Permissions enums.
-        :param wait_timeout: Time to wait for result (in seconds).
-        :return: True if all permissions are granted, False otherwise.
-        """
-
-        statuses = await self.request_multiple_permissions_async(
-            permissions=permissions,
-            wait_timeout=wait_timeout
-        )
-
-        return all(status == PermissionStatus.GRANTED for status in statuses.values())
-
-    def check_permission(self, permission: Permissions, wait_timeout: Optional[float] = 25) -> Optional[PermissionStatus]:
-        if not isinstance(permission, Permissions):
-            raise ValueError("'Permission' must be an instance of 'Permissions'.")
-
-        data_str = json.dumps({"permission": permission.value})
-
-        result = self.invoke_method(
-            "check_permission",
-            {'data': data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-        return PermissionStatus(result) if result is not None else None
-
-    async def check_permission_async(self, permission: Permissions, wait_timeout: Optional[float] = 25) -> Optional[PermissionStatus]:
-        if not isinstance(permission, Permissions):
-            raise ValueError("'Permission' must be an instance of 'Permissions'.")
-
-        data_str = json.dumps({"permission": permission.value})
-
-        result = await self.invoke_method_async(
-            "check_permission",
-            {"data": data_str},
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-        return PermissionStatus(result) if result is not None else None
-
-    def open_app_settings(self, wait_timeout: Optional[float] = 25) -> bool:
-        opened = self.invoke_method(
-            "open_app_settings",
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-        return opened == "true"
-
-    async def open_app_settings_async(self, wait_timeout: Optional[float] = 25) -> bool:
-        opened = await self.invoke_method_async(
-            "open_app_settings",
-            wait_for_result=True,
-            wait_timeout=wait_timeout,
-        )
-        return opened == "true"
-
     def request_health_data_history_authorization(self, wait_timeout: Optional[float] = 25) -> bool:
         """
         Requests the Health Data History permission.
@@ -525,6 +317,7 @@ class Health(Control):
         :param data_access: Optional list of 'DataAccess' corresponding to each 'type'.
                 - If 'None', the function assumes 'READ' for all types.
                 - If provided, it must have the same size as 'types', corresponding to each entry.
+        :param wait_timeout: Maximum time to wait for the permission request to complete.
 
         :return:
             True: if all the data types have the specified permissions.
@@ -730,7 +523,7 @@ class Health(Control):
             activity_segment_duration: Optional[int] = 1,
             include_manual_entry: Optional[bool] = True,
             wait_timeout: Optional[float] = 25
-    ):
+    ) -> list[dict]:
         """
         Fetch a list of health data points based on [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType]
         """
@@ -761,7 +554,7 @@ class Health(Control):
             wait_timeout=wait_timeout
         )
 
-        return json.loads(result) if result else []
+        return json.loads(result or "[]")
 
     async def get_health_aggregate_data_from_types_async(
             self,
@@ -771,7 +564,7 @@ class Health(Control):
             activity_segment_duration: Optional[int] = 1,
             include_manual_entry: Optional[bool] = True,
             wait_timeout: Optional[float] = 25
-    ):
+    ) -> list[dict]:
         """
         Fetch a list of health data points based on [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType]
         """
@@ -802,7 +595,7 @@ class Health(Control):
             wait_timeout=wait_timeout
         )
 
-        return json.loads(result) if result else []
+        return json.loads(result or "[]")
 
     def get_health_data_from_types(
             self,
@@ -861,7 +654,7 @@ class Health(Control):
                 wait_timeout=wait_timeout
             )
 
-            return json.loads(result) if result else []
+            return json.loads(result or "[]")
 
         except Exception as error:
             print(f"Error in get_health_data_from_types: {error}")
@@ -924,7 +717,7 @@ class Health(Control):
                 wait_timeout=wait_timeout
             )
 
-            return json.loads(result) if result else []
+            return json.loads(result or "[]")
 
         except Exception as error:
             print(f"Error in get_health_data_from_types: {error}")
@@ -990,7 +783,7 @@ class Health(Control):
                 wait_timeout=wait_timeout
             )
 
-            return json.loads(result) if result else []
+            return json.loads(result or "[]")
 
         except Exception as e:
             print(f"Error in get_health_interval_data_from_types: {e}")
@@ -1056,7 +849,7 @@ class Health(Control):
                 wait_timeout=wait_timeout
             )
 
-            return json.loads(result) if result else []
+            return json.loads(result or "[]")
 
         except Exception as e:
             print(f"Error in get_health_interval_data_from_types: {e}")
@@ -1822,6 +1615,53 @@ class Health(Control):
 
         return result == "true"
 
+    def remove_duplicates(
+            self,
+            points: list[dict],
+            wait_timeout: Optional[float] = 25
+    ) -> list[dict]:
+        """
+        Removes duplicate HealthDataPoint entries using the Dart side method.
+
+        :param points: A list of HealthDataPoint dictionaries (JSON format).
+        :param wait_timeout: Timeout in seconds to wait for the method result.
+        :return: A list of deduplicated HealthDataPoint dictionaries.
+        """
+
+        data = json.dumps(points)
+
+        result = self.invoke_method(
+            method_name="remove_duplicates",
+            arguments={'data': data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return json.loads(result or "[]")
+
+    async def remove_duplicates_async(
+            self,
+            points: list[dict],
+            wait_timeout: Optional[float] = 25
+    ) -> list[dict]:
+        """
+        Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
+
+        :param points: A list of HealthDataPoint dictionaries (JSON format).
+        :param wait_timeout: Timeout in seconds to wait for the method result.
+        :return: A list of deduplicated HealthDataPoint dictionaries.
+        """
+
+        data = json.dumps(points)
+
+        result = await self.invoke_method_async(
+            method_name="remove_duplicates",
+            arguments={'data': data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return json.loads(result or "[]")
 
     def delete(
             self,

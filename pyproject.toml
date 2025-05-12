@@ -1,6 +1,6 @@
 [project]
 name = "flet-health"
-version = "0.1.72"
+version = "0.1.0"
 description = "FletHealth control for Flet"
 requires-python = ">=3.9"
 readme = "README.md"
@@ -11,7 +11,7 @@ license = "MIT"
 license-files = []
 
 dependencies = [
-    "flet>=0.26.0",
+    "flet>=0.25.2",
 ]
 
 classifiers = [
@@ -32,11 +32,11 @@ Issues = "https://github.com/brunobrown/flet-health/issues"
 
 [tool.uv]
 dev-dependencies = [
-    "flet[all]==0.26.0",
+    "flet[all]==0.25.2",
 ]
 
 [tool.poetry.group.dev.dependencies]
-flet = {extras = ["all"], version = "0.26.0"}
+flet = {extras = ["all"], version = "0.25.2"}
 
 #[tool.setuptools]
 #packages = ["flet_health"]

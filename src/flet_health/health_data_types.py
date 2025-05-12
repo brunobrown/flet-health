@@ -1,58 +1,6 @@
 from enum import Enum
 
 
-class PermissionStatus(Enum):
-    GRANTED = 'granted'
-    DENIED = 'denied'
-    PERMANENTLY_DENIED = 'permanentlyDenied'
-    LIMITED = 'limited'
-    PROVISIONAL = 'provisional'
-    RESTRICTED = 'restricted'
-
-
-class Permissions(Enum):
-    CALENDAR = 'calendar'
-    CAMERA = 'camera'
-    CONTACTS = 'contacts'
-    LOCATION = 'location'
-    LOCATION_ALWAYS = 'locationAlways'
-    LOCATION_WHEN_IN_USE = 'locationWhenInUse'
-    MEDIA_LIBRARY = 'mediaLibrary'
-    MICROPHONE = 'microphone'
-    PHONE = 'phone'
-    PHOTOS = 'photos'
-    PHOTOS_ADD_ONLY = 'photosAddOnly'
-    REMINDERS = 'reminders'
-    SENSORS = 'sensors'
-    SMS = 'sms'
-    SPEECH = 'speech'
-    STORAGE = 'storage'
-    IGNORE_BATTERY_OPTIMIZATIONS = 'ignoreBatteryOptimizations'
-    NOTIFICATION = 'notification'
-    ACCESS_MEDIA_LOCATION = 'access_media_location'
-    ACTIVITY_RECOGNITION = 'activity_recognition'
-    UNKNOWN = 'unknown'
-    BLUETOOTH = 'bluetooth'
-    MANAGE_EXTERNAL_STORAGE = 'manageExternalStorage'
-    SYSTEM_ALERT_WINDOW = 'systemAlertWindow'
-    REQUEST_INSTALL_PACKAGES = 'requestInstallPackages'
-    APP_TRACKING_TRANSPARENCY = 'appTrackingTransparency'
-    CRITICAL_ALERTS = 'criticalAlerts'
-    ACCESS_NOTIFICATION_POLICY = 'accessNotificationPolicy'
-    BLUETOOTH_SCAN = 'bluetoothScan'
-    BLUETOOTH_ADVERTISE = 'bluetoothAdvertise'
-    BLUETOOTH_CONNECT = 'bluetoothConnect'
-    NEARBY_WIFI_DEVICES = 'nearbyWifiDevices'
-    VIDEOS = 'videos'
-    AUDIO = 'audio'
-    SCHEDULE_EXACT_ALARM = 'scheduleExactAlarm'
-    SENSORS_ALWAYS = 'sensorsAlways'
-    CALENDAR_WRITE_ONLY = 'calendarWriteOnly'
-    CALENDAR_FULL_ACCESS = 'calendarFullAccess'
-    ASSISTANT = 'assistant'
-    BACKGROUND_REFRESH = 'backgroundRefresh'
-
-
 class HealthDataTypeAndroid(Enum):
     ACTIVE_ENERGY_BURNED = 'ACTIVE_ENERGY_BURNED'
     BLOOD_GLUCOSE = 'BLOOD_GLUCOSE'
