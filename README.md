@@ -77,7 +77,16 @@ Add the following two entries to the ```Info.plist``` file:
 <string>We will sync your data with the Apple Health app to give you better insights</string>
 ```
 
-And enable HealthKit in Xcode (optional).
+**Optional:**
+
+Then, open your Flutter project in Xcode by right clicking on the "ios" folder and selecting "Open in Xcode". 
+Next, enable "HealthKit" by adding a capability inside the "Signing & Capabilities" tab of the Runner target's settings.
+
+Before:
+![Info](https://github.com/user-attachments/assets/5256fc14-c36d-4d54-bf6c-fcd74f9e11e0)
+
+After:
+![Info](https://github.com/user-attachments/assets/cc392117-70bd-4934-9bad-f8038dfe493a)
 
 ---
 
@@ -106,25 +115,35 @@ Include:
     </queries>
 ```
 
+Before:
+![AndroidManifest](https://github.com/user-attachments/assets/7828bb10-280b-4378-bdec-da0d9966dfb5)
+
+After:
+![AndroidManifest](https://github.com/user-attachments/assets/a823c0a7-815c-4a21-81ff-086861591530)
+
+
+---
+
 Modify the **MainActivity**  file at `{{cookiecutter.out_dir}}/android/app/src/main/kotlin/{{ cookiecutter.kotlin_dir }}/MainActivity.kt`.
 In the `MainActivity.kt` file, update the MainActivity class to extend from FlutterFragmentActivity instead of the default FlutterActivity.
 
 Change:
 
 ```kotlin
-package {{ cookiecutter.org_name }}.{{ cookiecutter.project_name }}
-
 import io.flutter.embedding.android.FlutterFragmentActivity
 
 class MainActivity: FlutterFragmentActivity()
 ```
 
+Before:
+![MainActivity](https://github.com/user-attachments/assets/18f5b375-2541-49ab-b6bd-1f325a1c758f)
+
+
+After:
+![MainActivity](https://github.com/user-attachments/assets/2d8edb85-d359-4669-800d-9c9d0ca78693)
+
+
 ---
-
-### 4. Adicione as permissões desejadas e referencie o diretorio `flet-build-template` no `pyproject.toml`
-Consulte a 
-
-Exemplo:
 
 ### 4. Add the desired permissions and reference the `flet-build-template` directory in `pyproject.toml`
 
