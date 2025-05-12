@@ -10,12 +10,19 @@
 
 ## ✨ Features
 
-*   📊 Reading and writing of health data (steps, calories, distance, workout sessions, and more).
-*   🔐 Unified permission management for Android and iOS.
-*   🔍 Duplicate filtering (internally).
-*   🗑️ Data deletion by UUID, type, and time interval.
+* handling permissions to access health data using the `has_permissions`, `request_authorization`, `revoke_permissions` methods.
+* reading health data using the `get_health_data_from_types` method.
+* writing health data using the `write_health_data` method.
+* writing workouts using the `write_workout` method.
+* writing meals on iOS (Apple Health) & Android using the `write_meal` method.
+* writing audiograms on iOS using the `write_audiogram` method.
+* writing blood pressure data using the `write_blood_pressure` method.
+* accessing total step counts using the `get_total_steps_in_interval` method.
+* cleaning up duplicate data points via the `remove_duplicates` method.
+* removing data of a given type in a selected period of time using the `delete` method.
+* removing data by UUID using the `delete_by_uuid` method.
 
-> ⚠ Note that for Android, the target phone needs to have the Health Connect app installed.
+> ⚠ Note that for Android, the target phone needs to have the [`Health Connect`](https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata&hl=en) app installed.
 
 ---
 
