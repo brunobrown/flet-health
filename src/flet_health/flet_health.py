@@ -1615,53 +1615,53 @@ class Health(Control):
 
         return result == "true"
 
-    def remove_duplicates(
-            self,
-            points: list[dict],
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
-        """
-        Removes duplicate HealthDataPoint entries using the Dart side method.
-
-        :param points: A list of HealthDataPoint dictionaries (JSON format).
-        :param wait_timeout: Timeout in seconds to wait for the method result.
-        :return: A list of deduplicated HealthDataPoint dictionaries.
-        """
-
-        data = json.dumps(points)
-
-        result = self.invoke_method(
-            method_name="remove_duplicates",
-            arguments={'data': data},
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
-
-        return json.loads(result or "[]")
-
-    async def remove_duplicates_async(
-            self,
-            points: list[dict],
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
-        """
-        Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
-
-        :param points: A list of HealthDataPoint dictionaries (JSON format).
-        :param wait_timeout: Timeout in seconds to wait for the method result.
-        :return: A list of deduplicated HealthDataPoint dictionaries.
-        """
-
-        data = json.dumps(points)
-
-        result = await self.invoke_method_async(
-            method_name="remove_duplicates",
-            arguments={'data': data},
-            wait_for_result=True,
-            wait_timeout=wait_timeout
-        )
-
-        return json.loads(result or "[]")
+    # def remove_duplicates(
+    #         self,
+    #         points: list[dict],
+    #         wait_timeout: Optional[float] = 25
+    # ) -> list[dict]:
+    #     """
+    #     Removes duplicate HealthDataPoint entries using the Dart side method.
+    #
+    #     :param points: A list of HealthDataPoint dictionaries (JSON format).
+    #     :param wait_timeout: Timeout in seconds to wait for the method result.
+    #     :return: A list of deduplicated HealthDataPoint dictionaries.
+    #     """
+    #
+    #     data = json.dumps(points)
+    #
+    #     result = self.invoke_method(
+    #         method_name="remove_duplicates",
+    #         arguments={'data': data},
+    #         wait_for_result=True,
+    #         wait_timeout=wait_timeout
+    #     )
+    #
+    #     return json.loads(result or "[]")
+    #
+    # async def remove_duplicates_async(
+    #         self,
+    #         points: list[dict],
+    #         wait_timeout: Optional[float] = 25
+    # ) -> list[dict]:
+    #     """
+    #     Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
+    #
+    #     :param points: A list of HealthDataPoint dictionaries (JSON format).
+    #     :param wait_timeout: Timeout in seconds to wait for the method result.
+    #     :return: A list of deduplicated HealthDataPoint dictionaries.
+    #     """
+    #
+    #     data = json.dumps(points)
+    #
+    #     result = await self.invoke_method_async(
+    #         method_name="remove_duplicates",
+    #         arguments={'data': data},
+    #         wait_for_result=True,
+    #         wait_timeout=wait_timeout
+    #     )
+    #
+    #     return json.loads(result or "[]")
 
     def delete(
             self,

@@ -18,7 +18,6 @@
 * writing audiograms on iOS using the `write_audiogram` method.
 * writing blood pressure data using the `write_blood_pressure` method.
 * accessing total step counts using the `get_total_steps_in_interval` method.
-* cleaning up duplicate data points via the `remove_duplicates` method.
 * removing data of a given type in a selected period of time using the `delete` method.
 * removing data by UUID using the `delete_by_uuid` method.
 
