@@ -5,7 +5,6 @@ from .flet_health import (
     HealthWorkoutActivityType,
     RecordingMethod,
     DataAccess,
-    Permissions,
     HealthDataUnit,
     MealType,
     MenstrualFlow,
