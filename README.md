@@ -159,7 +159,8 @@ via the `[tool.flet.android.permission]` section in the `pyproject.toml` file.
 The list of [permissions](https://developer.android.com/health-and-fitness/guides/health-connect/plan/data-types#permissions) 
 can be found here on the [data types](https://developer.android.com/health-and-fitness/guides/health-connect/plan/data-types) page.
 
-Refer to the [official Flet documentation](https://flet.dev/blog/pyproject-toml-support-for-flet-build-command/#android-settings) for more information.
+> See the [official Flet documentation](https://flet.dev/blog/pyproject-toml-support-for-flet-build-command/#android-settings) 
+> for more information on how to configure the `pyproject.toml` file with flet build commands.
 
 Example:
 
@@ -182,7 +183,7 @@ dependencies = [
 
 [tool.uv]
 dev-dependencies = [
-    "flet[all]>=0.26.0",
+    "flet[all]>=0.25.2",
 ]
 
 [tool.flet.android.permission] # --android-permissions
@@ -346,7 +347,7 @@ Contributions and feedback are welcome!
 
 ---
 
-## 🚀 Try flet-health today and integrate health data into your applications! 💪📊
+## 🚀 Try flet-health today and integrate health data into your applications! 💪🏽📊
 
 <img src="https://github.com/user-attachments/assets/431aa05f-5fbc-4daa-9689-b9723583e25a" width="500">
 
