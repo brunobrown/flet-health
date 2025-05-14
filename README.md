@@ -18,6 +18,7 @@
 * writing audiograms on iOS using the `write_audiogram` method.
 * writing blood pressure data using the `write_blood_pressure` method.
 * accessing total step counts using the `get_total_steps_in_interval` method.
+* cleaning up duplicate data points via the `remove_duplicates` method.
 * removing data of a given type in a selected period of time using the `delete` method.
 * removing data by UUID using the `delete_by_uuid` method.
 
@@ -39,16 +40,16 @@ If you liked this project, please consider supporting its development with a don
 
 Install using your package manager of choice:
 
-**Poetry**
-
-```bash
-poetry add flet-health
-```
-
 **Pip**
 
 ```bash
 pip install flet-health
+```
+
+**Poetry**
+
+```bash
+poetry add flet-health
 ```
 
 **UV**
@@ -153,7 +154,12 @@ After:
 
 ### 4. Add the desired permissions and reference the `flet-build-template` directory in `pyproject.toml`
 
-Refer to the [official Flet documentation](https://flet.dev/blog/pyproject-toml-support-for-flet-build-command/#android-settings)
+For each type of data you want to access, READ and WRITE permissions need to be added to the AndroidManifest.xml file 
+via the `[tool.flet.android.permission]` section in the `pyproject.toml` file.
+The list of [permissions](https://developer.android.com/health-and-fitness/guides/health-connect/plan/data-types#permissions) 
+can be found here on the [data types](https://developer.android.com/health-and-fitness/guides/health-connect/plan/data-types) page.
+
+Refer to the [official Flet documentation](https://flet.dev/blog/pyproject-toml-support-for-flet-build-command/#android-settings) for more information.
 
 Example:
 
@@ -169,8 +175,9 @@ authors = [
 ]
 
 dependencies = [
-    "flet>=0.26.2",
+    "flet>=0.25.2",
     "flet-health>=0.1.0",
+    "flet-permission-handler>=0.1.0",
 ]
 
 [tool.uv]
@@ -179,10 +186,6 @@ dev-dependencies = [
 ]
 
 [tool.flet.android.permission] # --android-permissions
-"android.permission.BODY_SENSORS" = true
-"android.permission.ACCESS_COARSE_LOCATION" = true
-"android.permission.ACCESS_FINE_LOCATION" = true
-"android.permission.ACTIVITY_RECOGNITION" = true
 "android.permission.health.READ_STEPS" = true
 "android.permission.health.WRITE_STEPS" = true
 "android.permission.health.READ_HEART_RATE" = true
@@ -194,7 +197,6 @@ dev-dependencies = [
 "android.permission.health.READ_WEIGHT" = true
 "android.permission.health.WRITE_WEIGHT" = true
 "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" = true
-"android.permission.health.READ_HEALTH_DATA_HISTORY" = true
 "android.permission.health.READ_ACTIVE_CALORIES_BURNED" = true
 "android.permission.health.READ_BASAL_METABOLIC_RATE" = true
 "android.permission.health.READ_HEART_RATE_VARIABILITY" = true
@@ -214,16 +216,87 @@ dir = "/absolute/path/to/yourProject/flet-build-template" # --template-dir
 
 ---
 
+By default, Health Connect restricts read data to 30 days from when permission has been granted.
+You can check and request access to historical data using the `is_health_data_history_authorized` and `request_health_data_history_authorization` methods, respectively.
+The above methods require the following permission to be declared:
+
+```toml
+[tool.flet.android.permission] # --android-permissions
+"android.permission.health.READ_HEALTH_DATA_HISTORY" = true
+```
+
+---
+
+Access to fitness data (e.g. Steps) requires permission to access the “Activity Recognition” API.
+To configure this, add the following line to your `AndroidManifest.xml` file using the `[tool.flet.android.permission]` section:
+
+```toml
+[tool.flet.android.permission] # --android-permissions
+"android.permission.ACTIVITY_RECOGNITION" = true
+```
+
+Additionally, for workouts, if the distance of a workout is requested then the location permissions below are needed.
+
+```toml
+[tool.flet.android.permission] # --android-permissions
+"android.permission.ACCESS_COARSE_LOCATION" = true
+"android.permission.ACCESS_FINE_LOCATION" = true
+```
+
+Because this is labeled as a `dangerous` protection level, the permission system will not grant it automatically and it 
+requires the user's action. You can prompt the user for it using the [flet-pemission-handler](https://flet.dev/docs/controls/permissionhandler) plugin. Follow the plugin setup 
+instructions.
+
+Install using your package manager of choice:
+
+**Pip**
+
+```bash
+pip flet-permission-handler
+```
+
+**Poetry**
+
+```bash
+poetry flet-permission-handler
+```
+
+**UV**
+
+```bash
+uv add flet-permission-handler
+```
+
+Basic Example:
+
+```python
+import flet as ft
+import flet_permission_handler as fph
+
+
+def main(page: ft.Page):
+    ph = fph.PermissionHandler()
+    page.overlay.append(ph)
+    ph.request_permission(fph.PermissionType.ACTIVITY_RECOGNITION)
+    ph.request_permission(fph.PermissionType.LOCATION)
+```
+---
+
 ## 🚀 Usage Example
 
 ```python
 import flet as ft
 import flet_health as fh
+import flet_permission_handler as fph
 from datetime import datetime, timedelta
 
 async def main(page: ft.Page):
     health = fh.Health()
-    page.overlay.append(health)
+    ph = fph.PermissionHandler()
+    page.overlay.extend([ph, health])
+    
+    ph.request_permission(fph.PermissionType.ACTIVITY_RECOGNITION)
+    ph.request_permission(fph.PermissionType.LOCATION)
 
     await health.request_authorization_async(
         types=[
@@ -237,21 +310,21 @@ async def main(page: ft.Page):
     )
 
     # Insert simulated data
-    now = datetime.now()
-    start = now - timedelta(minutes=30)
+    end_date = datetime.now()
+    start_date = end_date - timedelta(minutes=30)
 
     await health.write_health_data_async(
         types=fh.HealthDataTypeAndroid.STEPS,
-        start_time=start,
-        end_time=now,
+        start_time=start_date,
+        end_time=end_date,
         value=1000
     )
 
     # Read Data
     result = await health.get_health_data_from_types_async(
         types=[fh.HealthDataTypeAndroid.STEPS],
-        start_time=start - timedelta(days=3),
-        end_time=now,
+        start_time=end_date - timedelta(days=3),
+        end_time=end_date,
         #recording_method=None  # or: [fh.RecordingMethod.AUTOMATIC]
     )
 

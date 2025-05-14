@@ -70,7 +70,7 @@ class Health(Control):
         See this for more info:
             https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_HISTORY()
 
-            Android only. Returns true on iOS or false if an error occurs.
+            Android only. Returns True on iOS or False if an error occurs.
 
         :return: True if successful, False otherwise.
         """
@@ -82,6 +82,147 @@ class Health(Control):
 
         result = await self.invoke_method_async(
             method_name="request_health_data_history_authorization",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    def is_health_data_history_available(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks if the Health Data History feature is available.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_HISTORY()
+        Android only. Returns False on iOS or if an error occurs.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method(
+            method_name="is_health_data_history_available",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    async def is_health_data_history_available_async(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks if the Health Data History feature is available.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_HISTORY()
+        Android only. Returns False on iOS or if an error occurs.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method(
+            method_name="is_health_data_history_available_async",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    def is_health_data_history_authorized(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks the current status of the Health Data History permission.
+        Make sure to check [is_health_connect_available] before calling this method.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_HISTORY()
+        Android only. Returns True on iOS or False if an error occurs.
+
+        :return: True if successful, False otherwise.
+
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method(
+            method_name="is_health_data_history_authorized",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    async def is_health_data_history_authorized_async(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks the current status of the Health Data History permission.
+        Make sure to check [is_health_connect_available] before calling this method.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_HISTORY()
+        Android only. Returns True on iOS or False if an error occurs.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method_async(
+            method_name="is_health_data_history_authorized",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    def is_health_data_in_background_available(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks if the Health Data in Background feature is available.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND()
+        Android only. Returns false on iOS or if an error occurs.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method(
+            method_name="is_health_data_in_background_available",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    async def is_health_data_in_background_available_async(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Checks if the Health Data in Background feature is available.
+
+        See this for more info: https://developer.android.com/reference/androidx/health/connect/client/permission/HealthPermission#PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND()
+        Android only. Returns false on iOS or if an error occurs.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method_async(
+            method_name="is_health_data_in_background_available",
             wait_for_result=True,
             wait_timeout=wait_timeout,
         )
@@ -374,6 +515,48 @@ class Health(Control):
             self.invoke_method(
                 method_name="revoke_permissions"
             )
+
+    def is_health_connect_available(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Is Google Health Connect available on this phone?
+        Android only. Returns always true on iOS.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method(
+            method_name="is_health_connect_available",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
+
+    async def is_health_connect_available_async(self, wait_timeout: Optional[float] = 25) -> bool:
+        """
+        Is Google Health Connect available on this phone?
+        Android only. Returns always true on iOS.
+
+        :return: True if successful, False otherwise.
+        """
+
+        platform = self.page.platform.value
+
+        if platform == 'ios':
+            return True
+
+        result = self.invoke_method_async(
+            method_name="is_health_connect_available",
+            wait_for_result=True,
+            wait_timeout=wait_timeout,
+        )
+
+        return result == 'true'
 
     def install_health_connect(self) -> None:
         """Prompt the user to install the Google Health Connect app via the installed store (most likely Play Store).
@@ -860,7 +1043,7 @@ class Health(Control):
             saturation: float,
             start_time: datetime,
             end_time: datetime,
-            recording_method: Optional[RecordingMethod] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -878,7 +1061,7 @@ class Health(Control):
                 "saturation": saturation,
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
-                "recording_method": recording_method.value,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -895,7 +1078,7 @@ class Health(Control):
             saturation: float,
             start_time: datetime,
             end_time: datetime,
-            recording_method: Optional[RecordingMethod] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -913,7 +1096,7 @@ class Health(Control):
                 "saturation": saturation,
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
-                "recording_method": recording_method.value,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -968,7 +1151,7 @@ class Health(Control):
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
                 "unit": unit.value if unit else HealthDataUnit.NO_UNIT.value,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.AUTOMATIC.value
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1024,7 +1207,7 @@ class Health(Control):
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
                 "unit": unit.value if unit else HealthDataUnit.NO_UNIT.value,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.AUTOMATIC.value
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1066,7 +1249,7 @@ class Health(Control):
                 "total_distance": total_distance,
                 "total_distance_unit": total_distance_unit.value if total_distance_unit else HealthDataUnit.METER.value,
                 "title": title,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.AUTOMATIC.value,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
         result = self.invoke_method(
@@ -1106,7 +1289,7 @@ class Health(Control):
                 "total_distance": total_distance,
                 "total_distance_unit": total_distance_unit.value if total_distance_unit else HealthDataUnit.METER.value,
                 "title": title,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.AUTOMATIC.value,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
         result = await self.invoke_method_async(
@@ -1122,7 +1305,7 @@ class Health(Control):
             systolic: int,
             diastolic: int,
             start_time: datetime,
-            recording_method: Optional[RecordingMethod] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1136,7 +1319,7 @@ class Health(Control):
                 "systolic": systolic,
                 "diastolic": diastolic,
                 "start_time": int(start_time.timestamp() * 1000),
-                "recording_method": recording_method if recording_method else None,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1153,7 +1336,7 @@ class Health(Control):
             systolic: int,
             diastolic: int,
             start_time: datetime,
-            recording_method: Optional[RecordingMethod] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1167,7 +1350,7 @@ class Health(Control):
                 "systolic": systolic,
                 "diastolic": diastolic,
                 "start_time": int(start_time.timestamp() * 1000),
-                "recording_method": recording_method if recording_method else None,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1226,7 +1409,7 @@ class Health(Control):
             sugar: Optional[float] = None,
             water: Optional[float] = None,
             zinc: Optional[float] = None,
-            recording_method: Optional[str] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1282,7 +1465,7 @@ class Health(Control):
                 "sugar": sugar,
                 "water": water,
                 "zinc": zinc,
-                "recording_method": recording_method,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1342,7 +1525,7 @@ class Health(Control):
             sugar: Optional[float] = None,
             water: Optional[float] = None,
             zinc: Optional[float] = None,
-            recording_method: Optional[str] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1398,7 +1581,7 @@ class Health(Control):
                 "sugar": sugar,
                 "water": water,
                 "zinc": zinc,
-                "recording_method": recording_method,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1497,7 +1680,7 @@ class Health(Control):
             start_time: datetime,
             end_time: datetime,
             is_start_of_cycle: bool,
-            recording_method: Optional[str] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1512,7 +1695,7 @@ class Health(Control):
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
                 "is_start_of_cycle": is_start_of_cycle,
-                "recording_method": recording_method if recording_method else None,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1530,7 +1713,7 @@ class Health(Control):
             start_time: datetime,
             end_time: datetime,
             is_start_of_cycle: bool,
-            recording_method: Optional[str] = RecordingMethod.AUTOMATIC,
+            recording_method: Optional[RecordingMethod] = None,
             wait_timeout: Optional[float] = 25
     ) -> bool:
         """
@@ -1545,7 +1728,7 @@ class Health(Control):
                 "start_time": int(start_time.timestamp() * 1000),
                 "end_time": int(end_time.timestamp() * 1000),
                 "is_start_of_cycle": is_start_of_cycle,
-                "recording_method": recording_method if recording_method else None,
+                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
             }
         )
 
@@ -1615,53 +1798,53 @@ class Health(Control):
 
         return result == "true"
 
-    # def remove_duplicates(
-    #         self,
-    #         points: list[dict],
-    #         wait_timeout: Optional[float] = 25
-    # ) -> list[dict]:
-    #     """
-    #     Removes duplicate HealthDataPoint entries using the Dart side method.
-    #
-    #     :param points: A list of HealthDataPoint dictionaries (JSON format).
-    #     :param wait_timeout: Timeout in seconds to wait for the method result.
-    #     :return: A list of deduplicated HealthDataPoint dictionaries.
-    #     """
-    #
-    #     data = json.dumps(points)
-    #
-    #     result = self.invoke_method(
-    #         method_name="remove_duplicates",
-    #         arguments={'data': data},
-    #         wait_for_result=True,
-    #         wait_timeout=wait_timeout
-    #     )
-    #
-    #     return json.loads(result or "[]")
-    #
-    # async def remove_duplicates_async(
-    #         self,
-    #         points: list[dict],
-    #         wait_timeout: Optional[float] = 25
-    # ) -> list[dict]:
-    #     """
-    #     Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
-    #
-    #     :param points: A list of HealthDataPoint dictionaries (JSON format).
-    #     :param wait_timeout: Timeout in seconds to wait for the method result.
-    #     :return: A list of deduplicated HealthDataPoint dictionaries.
-    #     """
-    #
-    #     data = json.dumps(points)
-    #
-    #     result = await self.invoke_method_async(
-    #         method_name="remove_duplicates",
-    #         arguments={'data': data},
-    #         wait_for_result=True,
-    #         wait_timeout=wait_timeout
-    #     )
-    #
-    #     return json.loads(result or "[]")
+    def remove_duplicates(
+            self,
+            points: list[dict],
+            wait_timeout: Optional[float] = 25
+    ) -> list[dict]:
+        """
+        Removes duplicate HealthDataPoint entries using the Dart side method.
+
+        :param points: A list of HealthDataPoint dictionaries (JSON format).
+        :param wait_timeout: Timeout in seconds to wait for the method result.
+        :return: A list of deduplicated HealthDataPoint dictionaries.
+        """
+
+        data = json.dumps(points)
+
+        result = self.invoke_method(
+            method_name="remove_duplicates",
+            arguments={'data': data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return json.loads(result or "[]")
+
+    async def remove_duplicates_async(
+            self,
+            points: list[dict],
+            wait_timeout: Optional[float] = 25
+    ) -> list[dict]:
+        """
+        Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
+
+        :param points: A list of HealthDataPoint dictionaries (JSON format).
+        :param wait_timeout: Timeout in seconds to wait for the method result.
+        :return: A list of deduplicated HealthDataPoint dictionaries.
+        """
+
+        data = json.dumps(points)
+
+        result = await self.invoke_method_async(
+            method_name="remove_duplicates",
+            arguments={'data': data},
+            wait_for_result=True,
+            wait_timeout=wait_timeout
+        )
+
+        return json.loads(result or "[]")
 
     def delete(
             self,
