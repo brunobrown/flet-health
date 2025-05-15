@@ -191,42 +191,42 @@ dev-dependencies = [
 "android.permission.health.WRITE_STEPS" = true
 "android.permission.health.READ_HEART_RATE" = true
 "android.permission.health.WRITE_HEART_RATE" = true
-"android.permission.health.READ_EXERCISE" = true
-"android.permission.health.WRITE_EXERCISE" = true
-"android.permission.health.READ_TOTAL_CALORIES_BURNED" = true
-"android.permission.health.WRITE_TOTAL_CALORIES_BURNED" = true
-"android.permission.health.READ_WEIGHT" = true
-"android.permission.health.WRITE_WEIGHT" = true
 "android.permission.health.READ_HEIGHT" = true
 "android.permission.health.WRITE_HEIGHT" = true
-"android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" = true
+"android.permission.health.READ_WEIGHT" = true
+"android.permission.health.WRITE_WEIGHT" = true
 "android.permission.health.READ_ACTIVE_CALORIES_BURNED" = true
-"android.permission.health.READ_BASAL_METABOLIC_RATE" = true
-"android.permission.health.READ_HEART_RATE_VARIABILITY" = true
-"android.permission.health.READ_RESTING_HEART_RATE" = true
-"android.permission.health.READ_SLEEP" = true
-"android.permission.health.WRITE_SLEEP" = true
+"android.permission.health.WRITE_ACTIVE_CALORIES_BURNED" = true
 "android.permission.health.READ_DISTANCE" = true
 "android.permission.health.WRITE_DISTANCE" = true
-"android.permission.health.READ_MENSTRUATION" = true
-"android.permission.health.WRITE_MENSTRUATION" = true
-"android.permission.health.READ_NUTRITION" = true
-"android.permission.health.WRITE_NUTRITION" = true
 "android.permission.health.READ_BLOOD_GLUCOSE" = true
 "android.permission.health.WRITE_BLOOD_GLUCOSE" = true
-"android.permission.health.READ_BLOOD_PRESSURE" = true
-"android.permission.health.WRITE_BLOOD_PRESSURE" = true
 "android.permission.health.READ_OXYGEN_SATURATION" = true
 "android.permission.health.WRITE_OXYGEN_SATURATION" = true
 "android.permission.health.READ_BODY_TEMPERATURE" = true
 "android.permission.health.WRITE_BODY_TEMPERATURE" = true
+"android.permission.health.READ_BLOOD_PRESSURE" = true
+"android.permission.health.WRITE_BLOOD_PRESSURE" = true
+"android.permission.health.READ_SLEEP" = true
+"android.permission.health.WRITE_SLEEP" = true
+"android.permission.health.READ_EXERCISE" = true
+"android.permission.health.WRITE_EXERCISE" = true
+"android.permission.health.READ_NUTRITION" = true
+"android.permission.health.WRITE_NUTRITION" = true
+"android.permission.health.READ_HYDRATION" = true
+"android.permission.health.WRITE_HYDRATION" = true
+"android.permission.health.READ_MENSTRUATION" = true
+"android.permission.health.WRITE_MENSTRUATION" = true
 "android.permission.health.READ_HEART_RATE_VARIABILITY" = true
 "android.permission.health.WRITE_HEART_RATE_VARIABILITY" = true
-"android.permission.health.READ_BODY_WATER_MASS" = true
-"android.permission.health.WRITE_BODY_WATER_MASS" = true
 "android.permission.health.READ_LEAN_BODY_MASS" = true
 "android.permission.health.WRITE_LEAN_BODY_MASS" = true
-"android.permission.health.WRITE_ACTIVE_CALORIES_BURNED" = true
+###
+"android.permission.BODY_SENSORS" = true
+"android.permission.ACCESS_BACKGROUND_LOCATION" = true
+"android.permission.ACCESS_COARSE_LOCATION" = true
+"android.permission.ACCESS_FINE_LOCATION" = true
+"android.permission.ACTIVITY_RECOGNITION" = true
 
 
 # Reference the `flet-build-template` directory.
@@ -299,7 +299,7 @@ import flet_permission_handler as fph
 def main(page: ft.Page):
     ph = fph.PermissionHandler()
     page.overlay.append(ph)
-    ph.request_permission(fph.PermissionType.ACTIVITY_RECOGNITION)
+    ph.request_permission("activity_recognition")
     ph.request_permission(fph.PermissionType.LOCATION)
 ```
 ---
@@ -317,7 +317,7 @@ async def main(page: ft.Page):
     ph = fph.PermissionHandler()
     page.overlay.extend([ph, health])
     
-    ph.request_permission(fph.PermissionType.ACTIVITY_RECOGNITION)
+    ph.request_permission("activity_recognition")
     ph.request_permission(fph.PermissionType.LOCATION)
 
     await health.request_authorization_async(

@@ -28,13 +28,11 @@ migrate_working_dir/
 .packages
 .pub/
 .pub-cache/
-.pub-cache/
 pubspec.lock
 flutter_export_environment.sh
 **/doc/api/
 .metadata
 generated_plugin_registrant.dart
-flutter_export_environment.sh
 coverage/
 .melos_tool/
 
@@ -161,5 +159,5 @@ celerybeat.pid
 
 # === Itens do projeto atual ===
 main.py
-src/flutter/flet_onesignal/analysis_options.yaml
-src/flutter/flet_onesignal/.fvmrc
+src/flutter/flet_health/analysis_options.yaml
+src/flutter/flet_health/.fvmrc
