@@ -130,8 +130,7 @@ Before:
 ![AndroidManifest](https://github.com/user-attachments/assets/7828bb10-280b-4378-bdec-da0d9966dfb5)
 
 After:
-![AndroidManifest](https://github.com/user-attachments/assets/a823c0a7-815c-4a21-81ff-086861591530)
-
+![AndroidManifest](https://github.com/user-attachments/assets/34ee1e73-ba29-4e90-95b3-f0690d753189)
 
 ---
 
