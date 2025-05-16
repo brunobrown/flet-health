@@ -119,6 +119,10 @@ Include:
     <!-- Check whether Health Connect is installed or not -->
     <queries>
         <package android:name="com.google.android.apps.healthdata"/>
+        <!-- Intention to show Permissions screen for Health Connect API -->
+        <intent>
+            <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"/>
+        </intent>
     </queries>
 ```
 
@@ -221,7 +225,10 @@ dev-dependencies = [
 "android.permission.health.WRITE_HEART_RATE_VARIABILITY" = true
 "android.permission.health.READ_LEAN_BODY_MASS" = true
 "android.permission.health.WRITE_LEAN_BODY_MASS" = true
-###
+"android.permission.health.READ_TOTAL_CALORIES_BURNED" = true
+"android.permission.health.WRITE_TOTAL_CALORIES_BURNED" = true
+
+# Additional permissions if required
 "android.permission.BODY_SENSORS" = true
 "android.permission.ACCESS_BACKGROUND_LOCATION" = true
 "android.permission.ACCESS_COARSE_LOCATION" = true
