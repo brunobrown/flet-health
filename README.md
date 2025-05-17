@@ -61,7 +61,7 @@ poetry add flet-health
 **UV**
 
 ```bash
-uv pip install flet-health
+uv add flet-health
 ```
 
 ---
