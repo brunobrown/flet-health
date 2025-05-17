@@ -1,0 +1,73 @@
+[project]
+name = "flet-health-example_1"
+version = "0.1.0"
+description = "Flet Health Example 1"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "developer", email = "you@example.com" }
+]
+
+dependencies = [
+    "flet>=0.25.2",
+    "flet-health>=0.1.0",
+    "flet-permission-handler>=0.1.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "flet[all]>=0.25.2",
+]
+
+[tool.flet.android.permission] # --android-permissions
+"android.permission.health.READ_STEPS" = true
+"android.permission.health.WRITE_STEPS" = true
+"android.permission.health.READ_HEART_RATE" = true
+"android.permission.health.WRITE_HEART_RATE" = true
+"android.permission.health.READ_HEIGHT" = true
+"android.permission.health.WRITE_HEIGHT" = true
+"android.permission.health.READ_WEIGHT" = true
+"android.permission.health.WRITE_WEIGHT" = true
+"android.permission.health.READ_ACTIVE_CALORIES_BURNED" = true
+"android.permission.health.WRITE_ACTIVE_CALORIES_BURNED" = true
+"android.permission.health.READ_DISTANCE" = true
+"android.permission.health.WRITE_DISTANCE" = true
+"android.permission.health.READ_BLOOD_GLUCOSE" = true
+"android.permission.health.WRITE_BLOOD_GLUCOSE" = true
+"android.permission.health.READ_OXYGEN_SATURATION" = true
+"android.permission.health.WRITE_OXYGEN_SATURATION" = true
+"android.permission.health.READ_BODY_TEMPERATURE" = true
+"android.permission.health.WRITE_BODY_TEMPERATURE" = true
+"android.permission.health.READ_BLOOD_PRESSURE" = true
+"android.permission.health.WRITE_BLOOD_PRESSURE" = true
+"android.permission.health.READ_SLEEP" = true
+"android.permission.health.WRITE_SLEEP" = true
+"android.permission.health.READ_EXERCISE" = true
+"android.permission.health.WRITE_EXERCISE" = true
+"android.permission.health.READ_NUTRITION" = true
+"android.permission.health.WRITE_NUTRITION" = true
+"android.permission.health.READ_HYDRATION" = true
+"android.permission.health.WRITE_HYDRATION" = true
+"android.permission.health.READ_MENSTRUATION" = true
+"android.permission.health.WRITE_MENSTRUATION" = true
+"android.permission.health.READ_HEART_RATE_VARIABILITY" = true
+"android.permission.health.WRITE_HEART_RATE_VARIABILITY" = true
+"android.permission.health.READ_LEAN_BODY_MASS" = true
+"android.permission.health.WRITE_LEAN_BODY_MASS" = true
+"android.permission.health.READ_TOTAL_CALORIES_BURNED" = true
+"android.permission.health.WRITE_TOTAL_CALORIES_BURNED" = true
+
+# Additional permissions if required
+"android.permission.BODY_SENSORS" = true
+"android.permission.ACCESS_BACKGROUND_LOCATION" = true
+"android.permission.ACCESS_COARSE_LOCATION" = true
+"android.permission.ACCESS_FINE_LOCATION" = true
+"android.permission.ACTIVITY_RECOGNITION" = true
+
+
+# Reference the `flet-build-template` directory.
+[tool.flet.template]
+#path = "gh:some-github/repo" # --template
+#ref = "" # --template-ref
+dir = "/absolute/path/to/yourProject/flet-build-template" # --template-dir
+

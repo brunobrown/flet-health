@@ -4,7 +4,13 @@
 
 ## 📖 Overview
 
-`flet-health` is an extension of the Flutter [`health`](https://pub.dev/packages/health) package for Python/Flet. It allows integration with health data on both **Google Health Connect (Android)** and **Apple HealthKit (iOS)**.
+`flet-health` is an extension of the Flutter `health` package for Python/Flet. It allows integration with health data on both **Google Health Connect (Android)** and **Apple HealthKit (iOS)**.
+
+> ⚠️ **Note**:
+> 
+> This package is a Python/Flet wrapper for the Flutter [`health`](https://pub.dev/packages/health) plugin.  
+> All credits for the original plugin go to its maintainers.  
+> This wrapper was created to allow Python developers to access the same Health Connect/Apple HealthKit features using Flet.
 
 ---
 
