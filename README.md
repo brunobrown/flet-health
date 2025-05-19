@@ -301,7 +301,9 @@ poetry flet-permission-handler
 uv add flet-permission-handler
 ```
 
-Basic Example:
+---
+
+Example:
 
 ```python
 import os
@@ -943,14 +945,38 @@ if __name__ == "__main__":
 
 ---
 
-## 🤝🏽 Contributing
-Contributions and feedback are welcome! 
+## 🌐 Community
 
-#### To contribute:
+#### Join the community to contribute or get help:
+
+1. [Discord](https://discord.gg/5xJ7qvWM)
+2. [Report an issue](https://github.com/brunobrown/flet-health/issues)
+
+## ⭐ Support
+
+If you like this project, please give it a [GitHub star](https://github.com/brunobrown/flet-health) and stay tuned for future updates!
+
+## 🤝🏽 Contributing
+
+Contributions and feedback are welcome!
+
+#### 🔧 How to contribute:
 
 1. **Fork the repository.**
 2. **Create a feature branch.**
 3. **Submit a pull request with a detailed explanation of your changes.**
+
+#### 💬 How to give feedback:
+
+> We value your opinion! Feel free to share suggestions, ideas, or constructive criticism to help improve the project.
+
+1. **Open an issue.**
+2. **Describe the problem or suggestion clearly**
+3. **Optionally propose a solution**
+
+#### 🕓 Waiting for help?
+
+Be patient — or reach out to the community on [Discord](https://discord.gg/5xJ7qvWM) for quicker responses.
 
 ---
 
