@@ -61,7 +61,7 @@ poetry add flet-health
 **UV**
 
 ```bash
-uv pip install flet-health
+uv add flet-health
 ```
 
 ---
@@ -286,13 +286,13 @@ Install using your package manager of choice:
 **Pip**
 
 ```bash
-pip flet-permission-handler
+pip install flet-permission-handler
 ```
 
 **Poetry**
 
 ```bash
-poetry flet-permission-handler
+poetry add flet-permission-handler
 ```
 
 **UV**
