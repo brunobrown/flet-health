@@ -3,6 +3,7 @@ from datetime import datetime
 from flet.core.ref import Ref
 from flet.core.control import Control
 from flet_health.health_data_types import *
+from flet_health.utils import wrap_param
 from typing import Optional, Any, List, Dict
 from flet.core.types import OptionalControlEventCallable
 
@@ -314,8 +315,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": [t.value for t in types],
-                "data_access": [da.value for da in data_access] if data_access else None,
+                "types": wrap_param(types),
+                "data_access": wrap_param(data_access)
             }
         )
 
@@ -369,8 +370,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": [t.value for t in types],
-                "data_access": [da.value for da in data_access] if data_access else None,
+                "types": wrap_param(types),
+                "data_access": wrap_param(data_access),
             }
         )
 
@@ -422,8 +423,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": [t.value for t in types],
-                "data_access": [da.value for da in data_access],
+                "types": wrap_param(types),
+                "data_access": wrap_param(data_access),
             }
         )
 
@@ -480,8 +481,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": [t.value for t in types],
-                "data_access": [da.value for da in data_access],
+                "types": wrap_param(types),
+                "data_access": wrap_param(data_access),
             }
         )
 
@@ -645,14 +646,11 @@ class Health(Control):
         :return: `None` if not successful
         """
 
-        start_time_ms = int(start_time.timestamp() * 1000)
-        end_time_ms = int(end_time.timestamp() * 1000)
-
         data = json.dumps(
             {
-                "start_time": start_time_ms,
-                "end_time": end_time_ms,
-                "include_manual_entry": include_manual_entry
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "include_manual_entry": wrap_param(include_manual_entry)
             }
         )
 
@@ -678,14 +676,11 @@ class Health(Control):
         :return: `None` if not successful
         """
 
-        start_time_ms = int(start_time.timestamp() * 1000)
-        end_time_ms = int(end_time.timestamp() * 1000)
-
         data = json.dumps(
             {
-                "start_time": start_time_ms,
-                "end_time": end_time_ms,
-                "include_manual_entry": include_manual_entry
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "include_manual_entry": wrap_param(include_manual_entry)
             }
         )
 
@@ -715,18 +710,13 @@ class Health(Control):
         if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
             raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-        # Convert types to their string values
-        types_str = [t.value for t in types]
-        start_time_ms = int(start_time.timestamp() * 1000)
-        end_time_ms = int(end_time.timestamp() * 1000)
-
         data = json.dumps(
             {
-                "types": types_str,
-                "start_time": start_time_ms,
-                "end_time": end_time_ms,
-                "activity_segment_duration": activity_segment_duration,
-                "include_manual_entry": include_manual_entry
+                "types": wrap_param(types),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "activity_segment_duration": wrap_param(activity_segment_duration),
+                "include_manual_entry": wrap_param(include_manual_entry)
             }
         )
 
@@ -756,18 +746,13 @@ class Health(Control):
         if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
             raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-        # Convert types to their string values
-        types_str = [t.value for t in types]
-        start_time_ms = int(start_time.timestamp() * 1000)
-        end_time_ms = int(end_time.timestamp() * 1000)
-
         data = json.dumps(
             {
-                "types": types_str,
-                "start_time": start_time_ms,
-                "end_time": end_time_ms,
-                "activity_segment_duration": activity_segment_duration,
-                "include_manual_entry": include_manual_entry
+                "types": wrap_param(types),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "activity_segment_duration": wrap_param(activity_segment_duration),
+                "include_manual_entry": wrap_param(include_manual_entry)
             }
         )
 
@@ -812,20 +797,18 @@ class Health(Control):
             if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
                 raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-            # Convert types to their string values
-            types_str = [t.value for t in types]
-
-            # Convert datetimes to milliseconds since epoch
-            start_time_ms = int(start_time.timestamp() * 1000)
-            end_time_ms = int(end_time.timestamp() * 1000)
-
             # Prepare arguments for the invoke_method call
             data = json.dumps(
                 {
-                    "types": types_str,
-                    "start_time": start_time_ms,
-                    "end_time": end_time_ms,
-                    "recording_method": [rm.value for rm in recording_method] if recording_method else [],
+                    "types": wrap_param(types),
+                    "start_time": wrap_param(start_time),
+                    "end_time": wrap_param(end_time),
+                    "recording_method": wrap_param(
+                        param_value=recording_method or [],
+                        type_name="list",
+                        subtype_name="enum",
+                        class_name="RecordingMethod"
+                    )
                 }
             )
 
@@ -875,20 +858,18 @@ class Health(Control):
             if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
                 raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-            # Convert types to their string values
-            types_str = [t.value for t in types]
-
-            # Convert datetimes to milliseconds since epoch
-            start_time_ms = int(start_time.timestamp() * 1000)
-            end_time_ms = int(end_time.timestamp() * 1000)
-
             # Prepare arguments for the invoke_method call
             data = json.dumps(
                 {
-                    "types": types_str,
-                    "start_time": start_time_ms,
-                    "end_time": end_time_ms,
-                    "recording_method": [rm.value for rm in recording_method] if recording_method else [],
+                    "types": wrap_param(types),
+                    "start_time": wrap_param(start_time),
+                    "end_time": wrap_param(end_time),
+                    "recording_method": wrap_param(
+                        param_value=recording_method or [],
+                        type_name="list",
+                        subtype_name="enum",
+                        class_name="RecordingMethod"
+                    )
                 }
             )
 
@@ -940,21 +921,19 @@ class Health(Control):
             if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
                 raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-            # Convert types to their string values
-            types_str = [t.value for t in types]
-
-            # Convert datetimes to milliseconds since epoch
-            start_time_ms = int(start_time.timestamp() * 1000)
-            end_time_ms = int(end_time.timestamp() * 1000)
-
             # Prepare arguments for the invoke_method call
             data = json.dumps(
                 {
-                    "start_time": start_time_ms,
-                    "end_time": end_time_ms,
-                    "types": types_str,
-                    "interval": interval,
-                    "recording_method": [rm.value for rm in recording_method] if recording_method else [],
+                    "start_time": wrap_param(start_time),
+                    "end_time": wrap_param(end_time),
+                    "types": wrap_param(types),
+                    "interval": wrap_param(int(interval)),
+                    "recording_method": wrap_param(
+                        param_value=recording_method or [],
+                        type_name="list",
+                        subtype_name="enum",
+                        class_name="RecordingMethod"
+                    )
                 }
             )
 
@@ -1006,21 +985,19 @@ class Health(Control):
             if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
                 raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
 
-            # Convert types to their string values
-            types_str = [t.value for t in types]
-
-            # Convert datetimes to milliseconds since epoch
-            start_time_ms = int(start_time.timestamp() * 1000)
-            end_time_ms = int(end_time.timestamp() * 1000)
-
             # Prepare arguments for the invoke_method call
             data = json.dumps(
                 {
-                    "start_time": start_time_ms,
-                    "end_time": end_time_ms,
-                    "types": types_str,
-                    "interval": interval,
-                    "recording_method": [rm.value for rm in recording_method] if recording_method else [],
+                    "start_time": wrap_param(start_time),
+                    "end_time": wrap_param(end_time),
+                    "types": wrap_param(types),
+                    "interval": wrap_param(int(interval)),
+                    "recording_method": wrap_param(
+                        param_value=recording_method or [],
+                        type_name="list",
+                        subtype_name="enum",
+                        class_name="RecordingMethod"
+                    )
                 }
             )
 
@@ -1058,10 +1035,10 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "saturation": saturation,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "saturation": wrap_param(float(saturation)),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1093,10 +1070,10 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "saturation": saturation,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "saturation": wrap_param(float(saturation)),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1146,12 +1123,12 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "value": value,
-                "types": types.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "unit": unit.value if unit else HealthDataUnit.NO_UNIT.value,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "value": wrap_param(float(value)),
+                "types": wrap_param(types),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "unit": wrap_param(unit if unit else HealthDataUnit.NO_UNIT),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN)
             }
         )
 
@@ -1202,12 +1179,12 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "value": value,
-                "types": types.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "unit": unit.value if unit else HealthDataUnit.NO_UNIT.value,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "value": wrap_param(float(value)),
+                "types": wrap_param(types),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "unit": wrap_param(unit if unit else HealthDataUnit.NO_UNIT),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN)
             }
         )
 
@@ -1241,15 +1218,15 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "activity_type": activity_type.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "total_energy_burned": total_energy_burned,
-                "total_energy_burned_unit": total_energy_burned_unit.value if total_energy_burned_unit else HealthDataUnit.KILOCALORIE.value,
-                "total_distance": total_distance,
-                "total_distance_unit": total_distance_unit.value if total_distance_unit else HealthDataUnit.METER.value,
-                "title": title,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "activity_type": wrap_param(activity_type),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "total_energy_burned": wrap_param(total_energy_burned),
+                "total_energy_burned_unit": wrap_param(total_energy_burned_unit if total_energy_burned_unit else HealthDataUnit.KILOCALORIE),
+                "total_distance": wrap_param(total_distance),
+                "total_distance_unit": wrap_param(total_distance_unit if total_distance_unit else HealthDataUnit.METER),
+                "title": wrap_param(title),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
         result = self.invoke_method(
@@ -1281,15 +1258,15 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "activity_type": activity_type.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "total_energy_burned": total_energy_burned,
-                "total_energy_burned_unit": total_energy_burned_unit.value if total_energy_burned_unit else HealthDataUnit.KILOCALORIE.value,
-                "total_distance": total_distance,
-                "total_distance_unit": total_distance_unit.value if total_distance_unit else HealthDataUnit.METER.value,
-                "title": title,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "activity_type": wrap_param(activity_type),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "total_energy_burned": wrap_param(total_energy_burned),
+                "total_energy_burned_unit": wrap_param(total_energy_burned_unit if total_energy_burned_unit else HealthDataUnit.KILOCALORIE),
+                "total_distance": wrap_param(total_distance),
+                "total_distance_unit": wrap_param(total_distance_unit if total_distance_unit else HealthDataUnit.METER),
+                "title": wrap_param(title),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
         result = await self.invoke_method_async(
@@ -1316,10 +1293,10 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "systolic": systolic,
-                "diastolic": diastolic,
-                "start_time": int(start_time.timestamp() * 1000),
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "systolic": wrap_param(int(systolic)),
+                "diastolic": wrap_param(int(diastolic)),
+                "start_time": wrap_param(start_time),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1347,10 +1324,10 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "systolic": systolic,
-                "diastolic": diastolic,
-                "start_time": int(start_time.timestamp() * 1000),
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "systolic": wrap_param(int(systolic)),
+                "diastolic": wrap_param(int(diastolic)),
+                "start_time": wrap_param(start_time),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1420,52 +1397,52 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "meal_type": meal_type.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "calories_consumed": calories_consumed,
-                "carbohydrates": carbohydrates,
-                "protein": protein,
-                "fat_total": fat_total,
-                "name": name,
-                "caffeine": caffeine,
-                "vitamin_a": vitamin_a,
-                "b1_thiamin": b1_thiamin,
-                "b2_riboflavin": b2_riboflavin,
-                "b3_niacin": b3_niacin,
-                "b5_pantothenic_acid": b5_pantothenic_acid,
-                "b6_pyridoxine": b6_pyridoxine,
-                "b7_biotin": b7_biotin,
-                "b9_folate": b9_folate,
-                "b12_cobalamin": b12_cobalamin,
-                "vitamin_c": vitamin_c,
-                "vitamin_d": vitamin_d,
-                "vitamin_e": vitamin_e,
-                "vitamin_k": vitamin_k,
-                "calcium": calcium,
-                "cholesterol": cholesterol,
-                "chloride": chloride,
-                "chromium": chromium,
-                "copper": copper,
-                "fat_unsaturated": fat_unsaturated,
-                "fat_monounsaturated": fat_monounsaturated,
-                "fat_polyunsaturated": fat_polyunsaturated,
-                "fat_saturated": fat_saturated,
-                "fat_trans_monoenoic": fat_trans_monoenoic,
-                "fiber": fiber,
-                "iodine": iodine,
-                "iron": iron,
-                "magnesium": magnesium,
-                "manganese": manganese,
-                "molybdenum": molybdenum,
-                "phosphorus": phosphorus,
-                "potassium": potassium,
-                "selenium": selenium,
-                "sodium": sodium,
-                "sugar": sugar,
-                "water": water,
-                "zinc": zinc,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "meal_type": wrap_param(meal_type),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "calories_consumed": wrap_param(float(calories_consumed)),
+                "carbohydrates": wrap_param(float(carbohydrates)),
+                "protein": wrap_param(float(protein)),
+                "fat_total": wrap_param(float(fat_total)),
+                "name": wrap_param(str(name)),
+                "caffeine": wrap_param(float(caffeine)),
+                "vitamin_a": wrap_param(float(vitamin_a)),
+                "b1_thiamin": wrap_param(float(b1_thiamin)),
+                "b2_riboflavin": wrap_param(float(b2_riboflavin)),
+                "b3_niacin": wrap_param(float(b3_niacin)),
+                "b5_pantothenic_acid": wrap_param(float(b5_pantothenic_acid)),
+                "b6_pyridoxine": wrap_param(float(b6_pyridoxine)),
+                "b7_biotin": wrap_param(float(b7_biotin)),
+                "b9_folate": wrap_param(float(b9_folate)),
+                "b12_cobalamin": wrap_param(float(b12_cobalamin)),
+                "vitamin_c": wrap_param(float(vitamin_c)),
+                "vitamin_d": wrap_param(float(vitamin_d)),
+                "vitamin_e": wrap_param(float(vitamin_e)),
+                "vitamin_k": wrap_param(float(vitamin_k)),
+                "calcium": wrap_param(float(calcium)),
+                "cholesterol": wrap_param(float(cholesterol)),
+                "chloride": wrap_param(float(chloride)),
+                "chromium": wrap_param(float(chromium)),
+                "copper": wrap_param(float(copper)),
+                "fat_unsaturated": wrap_param(float(fat_unsaturated)),
+                "fat_monounsaturated": wrap_param(float(fat_monounsaturated)),
+                "fat_polyunsaturated": wrap_param(float(fat_polyunsaturated)),
+                "fat_saturated": wrap_param(float(fat_saturated)),
+                "fat_trans_monoenoic": wrap_param(float(fat_trans_monoenoic)),
+                "fiber": wrap_param(float(fiber)),
+                "iodine": wrap_param(float(iodine)),
+                "iron": wrap_param(float(iron)),
+                "magnesium": wrap_param(float(magnesium)),
+                "manganese": wrap_param(float(manganese)),
+                "molybdenum": wrap_param(float(molybdenum)),
+                "phosphorus": wrap_param(float(phosphorus)),
+                "potassium": wrap_param(float(potassium)),
+                "selenium": wrap_param(float(selenium)),
+                "sodium": wrap_param(float(sodium)),
+                "sugar": wrap_param(float(sugar)),
+                "water": wrap_param(float(water)),
+                "zinc": wrap_param(float(zinc)),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1536,52 +1513,52 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "meal_type": meal_type.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "calories_consumed": calories_consumed,
-                "carbohydrates": carbohydrates,
-                "protein": protein,
-                "fat_total": fat_total,
-                "name": name,
-                "caffeine": caffeine,
-                "vitamin_a": vitamin_a,
-                "b1_thiamin": b1_thiamin,
-                "b2_riboflavin": b2_riboflavin,
-                "b3_niacin": b3_niacin,
-                "b5_pantothenic_acid": b5_pantothenic_acid,
-                "b6_pyridoxine": b6_pyridoxine,
-                "b7_biotin": b7_biotin,
-                "b9_folate": b9_folate,
-                "b12_cobalamin": b12_cobalamin,
-                "vitamin_c": vitamin_c,
-                "vitamin_d": vitamin_d,
-                "vitamin_e": vitamin_e,
-                "vitamin_k": vitamin_k,
-                "calcium": calcium,
-                "cholesterol": cholesterol,
-                "chloride": chloride,
-                "chromium": chromium,
-                "copper": copper,
-                "fat_unsaturated": fat_unsaturated,
-                "fat_monounsaturated": fat_monounsaturated,
-                "fat_polyunsaturated": fat_polyunsaturated,
-                "fat_saturated": fat_saturated,
-                "fat_trans_monoenoic": fat_trans_monoenoic,
-                "fiber": fiber,
-                "iodine": iodine,
-                "iron": iron,
-                "magnesium": magnesium,
-                "manganese": manganese,
-                "molybdenum": molybdenum,
-                "phosphorus": phosphorus,
-                "potassium": potassium,
-                "selenium": selenium,
-                "sodium": sodium,
-                "sugar": sugar,
-                "water": water,
-                "zinc": zinc,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "meal_type": wrap_param(meal_type),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "calories_consumed": wrap_param(float(calories_consumed)),
+                "carbohydrates": wrap_param(float(carbohydrates)),
+                "protein": wrap_param(float(protein)),
+                "fat_total": wrap_param(float(fat_total)),
+                "name": wrap_param(str(name)),
+                "caffeine": wrap_param(float(caffeine)),
+                "vitamin_a": wrap_param(float(vitamin_a)),
+                "b1_thiamin": wrap_param(float(b1_thiamin)),
+                "b2_riboflavin": wrap_param(float(b2_riboflavin)),
+                "b3_niacin": wrap_param(float(b3_niacin)),
+                "b5_pantothenic_acid": wrap_param(float(b5_pantothenic_acid)),
+                "b6_pyridoxine": wrap_param(float(b6_pyridoxine)),
+                "b7_biotin": wrap_param(float(b7_biotin)),
+                "b9_folate": wrap_param(float(b9_folate)),
+                "b12_cobalamin": wrap_param(float(b12_cobalamin)),
+                "vitamin_c": wrap_param(float(vitamin_c)),
+                "vitamin_d": wrap_param(float(vitamin_d)),
+                "vitamin_e": wrap_param(float(vitamin_e)),
+                "vitamin_k": wrap_param(float(vitamin_k)),
+                "calcium": wrap_param(float(calcium)),
+                "cholesterol": wrap_param(float(cholesterol)),
+                "chloride": wrap_param(float(chloride)),
+                "chromium": wrap_param(float(chromium)),
+                "copper": wrap_param(float(copper)),
+                "fat_unsaturated": wrap_param(float(fat_unsaturated)),
+                "fat_monounsaturated": wrap_param(float(fat_monounsaturated)),
+                "fat_polyunsaturated": wrap_param(float(fat_polyunsaturated)),
+                "fat_saturated": wrap_param(float(fat_saturated)),
+                "fat_trans_monoenoic": wrap_param(float(fat_trans_monoenoic)),
+                "fiber": wrap_param(float(fiber)),
+                "iodine": wrap_param(float(iodine)),
+                "iron": wrap_param(float(iron)),
+                "magnesium": wrap_param(float(magnesium)),
+                "manganese": wrap_param(float(manganese)),
+                "molybdenum": wrap_param(float(molybdenum)),
+                "phosphorus": wrap_param(float(phosphorus)),
+                "potassium": wrap_param(float(potassium)),
+                "selenium": wrap_param(float(selenium)),
+                "sodium": wrap_param(float(sodium)),
+                "sugar": wrap_param(float(sugar)),
+                "water": wrap_param(float(water)),
+                "zinc": wrap_param(float(zinc)),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1617,12 +1594,12 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "frequencies": frequencies,
-                "left_ear_sensitivities": left_ear_sensitivities,
-                "right_ear_sensitivities": right_ear_sensitivities,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "metadata": metadata,
+                "frequencies": wrap_param(frequencies),
+                "left_ear_sensitivities": wrap_param(left_ear_sensitivities),
+                "right_ear_sensitivities": wrap_param(right_ear_sensitivities),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "metadata": wrap_param(metadata),
             }
         )
 
@@ -1657,12 +1634,12 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "frequencies": frequencies,
-                "left_ear_sensitivities": left_ear_sensitivities,
-                "right_ear_sensitivities": right_ear_sensitivities,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "metadata": metadata,
+                "frequencies": wrap_param(frequencies),
+                "left_ear_sensitivities": wrap_param(left_ear_sensitivities),
+                "right_ear_sensitivities": wrap_param(right_ear_sensitivities),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "metadata": wrap_param(metadata),
             }
         )
 
@@ -1691,11 +1668,11 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "flow": flow.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "is_start_of_cycle": is_start_of_cycle,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "flow": wrap_param(flow),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "is_start_of_cycle": wrap_param(bool(is_start_of_cycle)),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1724,11 +1701,11 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "flow": flow.value,
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000),
-                "is_start_of_cycle": is_start_of_cycle,
-                "recording_method": recording_method.value if recording_method else RecordingMethod.UNKNOWN.value,
+                "flow": wrap_param(flow),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+                "is_start_of_cycle": wrap_param(bool(is_start_of_cycle)),
+                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
             }
         )
 
@@ -1754,12 +1731,14 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps({
-            "units": units,
-            "reason": reason,
-            "start_time": int(start_time.timestamp() * 1000),
-            "end_time": int(end_time.timestamp() * 1000),
-        })
+        data = json.dumps(
+            {
+                "units": wrap_param(float(units)),
+                "reason": wrap_param(reason),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+            }
+        )
 
         result = self.invoke_method(
             method_name="write_insulin_delivery",
@@ -1782,12 +1761,14 @@ class Health(Control):
         No description.
         """
 
-        data = json.dumps({
-            "units": units,
-            "reason": reason,
-            "start_time": int(start_time.timestamp() * 1000),
-            "end_time": int(end_time.timestamp() * 1000),
-        })
+        data = json.dumps(
+            {
+                "units": wrap_param(float(units)),
+                "reason": wrap_param(reason),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time),
+            }
+        )
 
         result = await self.invoke_method_async(
             method_name="write_insulin_delivery",
@@ -1811,7 +1792,7 @@ class Health(Control):
         :return: A list of deduplicated HealthDataPoint dictionaries.
         """
 
-        data = json.dumps(points)
+        data = json.dumps(wrap_param(points))
 
         result = self.invoke_method(
             method_name="remove_duplicates",
@@ -1835,7 +1816,7 @@ class Health(Control):
         :return: A list of deduplicated HealthDataPoint dictionaries.
         """
 
-        data = json.dumps(points)
+        data = json.dumps(wrap_param(points))
 
         result = await self.invoke_method_async(
             method_name="remove_duplicates",
@@ -1866,9 +1847,9 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": types.value if types else "",
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000) if end_time else None
+                "types": wrap_param(types if types else ""),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time if end_time else None)
             }
         )
 
@@ -1901,9 +1882,9 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "types": types.value if types else "",
-                "start_time": int(start_time.timestamp() * 1000),
-                "end_time": int(end_time.timestamp() * 1000) if end_time else None
+                "types": wrap_param(types if types else ""),
+                "start_time": wrap_param(start_time),
+                "end_time": wrap_param(end_time if end_time else None)
             }
         )
 
@@ -1936,8 +1917,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "uuid": uuid,
-                "types": types.value if types else ""
+                "uuid": wrap_param(str(uuid)),
+                "types": wrap_param(types if types else "")
             }
         )
 
@@ -1970,8 +1951,8 @@ class Health(Control):
 
         data = json.dumps(
             {
-                "uuid": uuid,
-                "types": types.value if types else ""
+                "uuid": wrap_param(str(uuid)),
+                "types": wrap_param(types if types else "")
             }
         )
 
