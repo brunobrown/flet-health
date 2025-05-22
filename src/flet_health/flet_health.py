@@ -1,11 +1,25 @@
 import json
-from datetime import datetime
 from flet.core.ref import Ref
 from flet.core.control import Control
 from flet_health.health_data_types import *
-from flet_health.utils import wrap_param
-from typing import Optional, Any, List, Dict
+from typing import Optional, Any
 from flet.core.types import OptionalControlEventCallable
+from flet_health.health_schemas import (
+    StepsIntervalParams,
+    HealthAuthorizationParams,
+    HealthAggregateDataParams,
+    GetHealthDataParams,
+    HealthIntervalDataParams,
+    BloodOxygenParams,
+    WriteHealthDataParams,
+    WorkoutParams,
+    BloodPressureParams,
+    MealParams,
+    AudiogramParams,
+    MenstrualFlowParams,
+    InsulinDeliveryParams,
+    RemoveDuplicatesParams, DeleteParams, DeleteByUUIDParams
+)
 
 
 class Health(Control):
@@ -274,17 +288,13 @@ class Health(Control):
 
         return result == 'true'
 
-    def request_authorization(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            data_access: Optional[List[DataAccess]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def request_authorization(self, params: HealthAuthorizationParams) -> bool:
         """
         Requests permissions to access health data specified in `types`.
 
         Returns `True` if the request is successful, `False` otherwise.
 
+        :param params: HealthAuthorizationParams
         :param types: (list) List of health data types for which permissions are requested.
         :param data_access: (list, optional)
             - If not specified, each data type in `types` will be requested with READ permission (`HealthDataAccess.READ`).
@@ -301,45 +311,24 @@ class Health(Control):
             READ or READ/WRITE permissions.
         """
 
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-        if data_access is None:
-            data_access = [DataAccess.READ] * len(types)
-
-        else:
-            if not all(isinstance(da, DataAccess) for da in data_access):
-                raise ValueError("All elements of 'data_access' must be instances of 'DataAccess'.")
-            if len(data_access) != len(types):
-                raise ValueError("The 'data_access' list must be the same size as 'types'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "data_access": wrap_param(data_access)
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="request_authorization",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def request_authorization_async(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            data_access: Optional[List[DataAccess]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def request_authorization_async(self, params: HealthAuthorizationParams) -> bool:
         """
         Requests permissions to access health data specified in `types`.
 
         Returns `True` if the request is successful, `False` otherwise.
 
+        :param params: HealthAuthorizationParams
         :param types: (list) List of health data types for which permissions are requested.
         :param data_access: (list, optional)
             - If not specified, each data type in `types` will be requested with READ permission (`HealthDataAccess.READ`).
@@ -356,40 +345,18 @@ class Health(Control):
             READ or READ/WRITE permissions.
         """
 
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
+        data = params.to_wrapped()
 
-        if data_access is None:
-            data_access = [DataAccess.READ] * len(types)
-
-        else:
-            if not all(isinstance(da, DataAccess) for da in data_access):
-                raise ValueError("All elements of 'data_access' must be instances of 'DataAccess'.")
-            if len(data_access) != len(types):
-                raise ValueError("The 'data_access' list must be the same size as 'types'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "data_access": wrap_param(data_access),
-            }
-        )
-
-        result = await self.invoke_method_async(
+        result = self.invoke_method(
             method_name="request_authorization",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    def has_permissions(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            data_access: Optional[List[DataAccess]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> Optional[bool]:
+    def has_permissions(self, params: HealthAuthorizationParams) -> Optional[bool]:
         """
         Checks if the provided health data types have the specified access permissions.
 
@@ -397,6 +364,7 @@ class Health(Control):
             - On iOS, HealthKit does not disclose if read access has been granted, so the function may return 'None'.
             - On Android, it always returns 'True' or 'False' based on the granted permissions.
 
+        :param params: HealthAuthorizationParams
         :param types: List of 'TypesActivities, WorkoutTypes, str', representing the health data types to be checked.
         :param data_access: Optional list of 'DataAccess' corresponding to each 'type'.
                 - If 'None', the function assumes 'READ' for all types.
@@ -409,30 +377,13 @@ class Health(Control):
             - None: if it is not possible to determine the permissions (as in iOS).
         """
 
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-        if data_access is None:
-            data_access = [DataAccess.READ] * len(types)
-
-        else:
-            if not all(isinstance(da, DataAccess) for da in data_access):
-                raise ValueError("All elements of 'data_access' must be instances of 'DataAccess'.")
-            if len(data_access) != len(types):
-                raise ValueError("The 'data_access' list must be the same size as 'types'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "data_access": wrap_param(data_access),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="has_permissions",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         if result == "true":
@@ -442,12 +393,7 @@ class Health(Control):
         else:
             return None
 
-    async def has_permissions_async(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            data_access: Optional[List[DataAccess]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> Optional[bool]:
+    async def has_permissions_async(self, params: HealthAuthorizationParams) -> Optional[bool]:
         """
         Checks if the provided health data types have the specified access permissions.
 
@@ -455,6 +401,7 @@ class Health(Control):
             - On iOS, HealthKit does not disclose if read access has been granted, so the function may return 'None'.
             - On Android, it always returns 'True' or 'False' based on the granted permissions.
 
+        :param params: HealthAuthorizationParams
         :param types: List of 'TypesActivities, WorkoutTypes, str', representing the health data types to be checked.
         :param data_access: Optional list of 'DataAccess' corresponding to each 'type'.
                 - If 'None', the function assumes 'READ' for all types.
@@ -467,30 +414,13 @@ class Health(Control):
             None: if it is not possible to determine the permissions (as in iOS).
         """
 
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-        if data_access is None:
-            data_access = [DataAccess.READ] * len(types)
-
-        else:
-            if not all(isinstance(da, DataAccess) for da in data_access):
-                raise ValueError("All elements of 'data_access' must be instances of 'DataAccess'.")
-            if len(data_access) != len(types):
-                raise ValueError("The 'data_access' list must be the same size as 'types'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "data_access": wrap_param(data_access),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="has_permissions",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         if result == "true":
@@ -633,146 +563,76 @@ class Health(Control):
             return None
 
 
-    def get_total_steps_in_interval(
-            self,
-            start_time: datetime,
-            end_time: datetime,
-            include_manual_entry: Optional[bool] = True,
-            wait_timeout: Optional[float] = 25
-    ):
+    def get_total_steps_in_interval(self, params: StepsIntervalParams):
         """
         Get the total number of steps within a specific time period.
 
         :return: `None` if not successful
         """
 
-        data = json.dumps(
-            {
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "include_manual_entry": wrap_param(include_manual_entry)
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="get_total_steps_in_interval",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return int(result) if result else None
 
-    async def get_total_steps_in_interval_async(
-            self,
-            start_time: datetime,
-            end_time: datetime,
-            include_manual_entry: Optional[bool] = True,
-            wait_timeout: Optional[float] = 25
-    ):
+    async def get_total_steps_in_interval_async(self, params: StepsIntervalParams):
         """
         Get the total number of steps within a specific time period.
 
         :return: `None` if not successful
         """
 
-        data = json.dumps(
-            {
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "include_manual_entry": wrap_param(include_manual_entry)
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="get_total_steps_in_interval",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return int(result) if result else None
 
-    def get_health_aggregate_data_from_types(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: datetime,
-            activity_segment_duration: Optional[int] = 1,
-            include_manual_entry: Optional[bool] = True,
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
+    def get_health_aggregate_data_from_types(self, params: HealthAggregateDataParams) -> list[dict]:
         """
         Fetch a list of health data points based on [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType]
         """
 
-        # Validate types
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "activity_segment_duration": wrap_param(activity_segment_duration),
-                "include_manual_entry": wrap_param(include_manual_entry)
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="get_health_aggregate_data_from_types",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return json.loads(result or "[]")
 
     async def get_health_aggregate_data_from_types_async(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: datetime,
-            activity_segment_duration: Optional[int] = 1,
-            include_manual_entry: Optional[bool] = True,
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
+            self, params: HealthAggregateDataParams) -> list[dict]:
         """
         Fetch a list of health data points based on [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType]
         """
 
-        # Validate types
-        if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-            raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-        data = json.dumps(
-            {
-                "types": wrap_param(types),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "activity_segment_duration": wrap_param(activity_segment_duration),
-                "include_manual_entry": wrap_param(include_manual_entry)
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="get_health_aggregate_data_from_types",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return json.loads(result or "[]")
 
-    def get_health_data_from_types(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: datetime,
-            recording_method: Optional[List[RecordingMethod]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> str | list[Any] | None:
+    def get_health_data_from_types(self, params: GetHealthDataParams) -> str | list[Any] | None:
         """
         Fetches a list of health data points based on types [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType].
         You can also specify the [recording_methods_to_filter] to filter the data points.
@@ -788,36 +648,14 @@ class Health(Control):
         """
 
         try:
-
-            # Validate recording methods
-            if recording_method and not all(isinstance(rc, RecordingMethod) for rc in recording_method):
-                raise ValueError("The 'recording_method' argument must be an instance of 'RecordingMethod'.")
-
-            # Validate types
-            if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-                raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-            # Prepare arguments for the invoke_method call
-            data = json.dumps(
-                {
-                    "types": wrap_param(types),
-                    "start_time": wrap_param(start_time),
-                    "end_time": wrap_param(end_time),
-                    "recording_method": wrap_param(
-                        param_value=recording_method or [],
-                        type_name="list",
-                        subtype_name="enum",
-                        class_name="RecordingMethod"
-                    )
-                }
-            )
+            data = params.to_wrapped()
 
             # Call the native method
             result = self.invoke_method(
                 method_name="get_health_data_from_types",
                 arguments={'data': data},
                 wait_for_result=True,
-                wait_timeout=wait_timeout
+                wait_timeout=params.wait_timeout
             )
 
             return json.loads(result or "[]")
@@ -826,14 +664,7 @@ class Health(Control):
             print(f"Error in get_health_data_from_types: {error}")
             return []
 
-    async def get_health_data_from_types_async(
-            self,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: datetime,
-            recording_method: Optional[List[RecordingMethod]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> str | list[Any] | None:
+    async def get_health_data_from_types_async(self, params: GetHealthDataParams) -> str | list[Any] | None:
         """
         Fetches a list of health data points based on types [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType].
         You can also specify the [recording_methods_to_filter] to filter the data points.
@@ -849,36 +680,14 @@ class Health(Control):
         """
 
         try:
-
-            # Validate recording methods
-            if recording_method and not all(isinstance(rc, RecordingMethod) for rc in recording_method):
-                raise ValueError("The 'recording_method' argument must be an instance of 'RecordingMethod'.")
-
-            # Validate types
-            if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-                raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-            # Prepare arguments for the invoke_method call
-            data = json.dumps(
-                {
-                    "types": wrap_param(types),
-                    "start_time": wrap_param(start_time),
-                    "end_time": wrap_param(end_time),
-                    "recording_method": wrap_param(
-                        param_value=recording_method or [],
-                        type_name="list",
-                        subtype_name="enum",
-                        class_name="RecordingMethod"
-                    )
-                }
-            )
+            data = params.to_wrapped()
 
             # Call the native method
             result = await self.invoke_method_async(
                 method_name="get_health_data_from_types",
                 arguments={'data': data},
                 wait_for_result=True,
-                wait_timeout=wait_timeout
+                wait_timeout=params.wait_timeout
             )
 
             return json.loads(result or "[]")
@@ -887,15 +696,7 @@ class Health(Control):
             print(f"Error in get_health_data_from_types: {error}")
             return []
 
-    def get_health_interval_data_from_types(
-            self,
-            start_time: datetime,
-            end_time: datetime,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            interval: int,
-            recording_method: Optional[List[RecordingMethod]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> list[Any]:
+    def get_health_interval_data_from_types(self, params: HealthIntervalDataParams) -> list[Any]:
         """
         Fetch a list of health data points based on types [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType].
         You can also specify the [recordingMethodsToFilter] to filter the data points.
@@ -913,36 +714,14 @@ class Health(Control):
 
         try:
 
-            # Validate recording methods
-            if recording_method and not all(isinstance(rc, RecordingMethod) for rc in recording_method):
-                raise ValueError("The 'recording_method' argument must be an instance of 'RecordingMethod'.")
-
-            # Validate types
-            if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-                raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-            # Prepare arguments for the invoke_method call
-            data = json.dumps(
-                {
-                    "start_time": wrap_param(start_time),
-                    "end_time": wrap_param(end_time),
-                    "types": wrap_param(types),
-                    "interval": wrap_param(int(interval)),
-                    "recording_method": wrap_param(
-                        param_value=recording_method or [],
-                        type_name="list",
-                        subtype_name="enum",
-                        class_name="RecordingMethod"
-                    )
-                }
-            )
+            data = params.to_wrapped()
 
             # Call the native method
             result = self.invoke_method(
                 method_name="get_health_interval_data_from_types",
                 arguments={'data': data},
                 wait_for_result=True,
-                wait_timeout=wait_timeout
+                wait_timeout=params.wait_timeout
             )
 
             return json.loads(result or "[]")
@@ -951,15 +730,7 @@ class Health(Control):
             print(f"Error in get_health_interval_data_from_types: {e}")
             return []
 
-    async def get_health_interval_data_from_types_async(
-            self,
-            start_time: datetime,
-            end_time: datetime,
-            types: List[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            interval: int,
-            recording_method: Optional[List[RecordingMethod]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> list[Any]:
+    async def get_health_interval_data_from_types_async(self, params: HealthIntervalDataParams) -> list[Any]:
         """
         Fetch a list of health data points based on types [HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType].
         You can also specify the [recordingMethodsToFilter] to filter the data points.
@@ -976,37 +747,14 @@ class Health(Control):
         """
 
         try:
-
-            # Validate recording methods
-            if recording_method and not all(isinstance(rc, RecordingMethod) for rc in recording_method):
-                raise ValueError("The 'recording_method' argument must be an instance of 'RecordingMethod'.")
-
-            # Validate types
-            if not all(isinstance(t, HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType) for t in types):
-                raise ValueError("All elements of 'types' must be instances of 'HealthDataTypeAndroid, HealthDataTypeIOS or HealthWorkoutActivityType'.")
-
-            # Prepare arguments for the invoke_method call
-            data = json.dumps(
-                {
-                    "start_time": wrap_param(start_time),
-                    "end_time": wrap_param(end_time),
-                    "types": wrap_param(types),
-                    "interval": wrap_param(int(interval)),
-                    "recording_method": wrap_param(
-                        param_value=recording_method or [],
-                        type_name="list",
-                        subtype_name="enum",
-                        class_name="RecordingMethod"
-                    )
-                }
-            )
+            data = params.to_wrapped()
 
             # Call the native method
             result = await self.invoke_method_async(
                 method_name="get_health_interval_data_from_types",
                 arguments={'data': data},
                 wait_for_result=True,
-                wait_timeout=wait_timeout
+                wait_timeout=params.wait_timeout
             )
 
             return json.loads(result or "[]")
@@ -1015,86 +763,41 @@ class Health(Control):
             print(f"Error in get_health_interval_data_from_types: {e}")
             return []
 
-    def write_blood_oxygen(
-            self,
-            saturation: float,
-            start_time: datetime,
-            end_time: datetime,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_blood_oxygen(self, params: BloodOxygenParams) -> bool:
         """
         Saves blood oxygen saturation record.
 
         :return: True if successful, False otherwise
         """
 
-        # Validate recording methods
-        if recording_method and not isinstance(recording_method, RecordingMethod):
-            raise ValueError(f"Invalid recording method: {recording_method}.")
-
-        data = json.dumps(
-            {
-                "saturation": wrap_param(float(saturation)),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_blood_oxygen",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    async def write_blood_oxygen_async(
-            self,
-            saturation: float,
-            start_time: datetime,
-            end_time: datetime,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def write_blood_oxygen_async(self, params: BloodOxygenParams) -> bool:
         """
         Saves blood oxygen saturation record.
 
         :return: True if successful, False otherwise
         """
 
-        # Validate recording methods
-        if recording_method and not isinstance(recording_method, RecordingMethod):
-            raise ValueError(f"Invalid recording method: {recording_method}.")
-
-        data = json.dumps(
-            {
-                "saturation": wrap_param(float(saturation)),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_blood_oxygen",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    def write_health_data(
-            self,
-            value: float,
-            start_time: datetime,
-            end_time: datetime,
-            types: HealthDataTypeAndroid | HealthDataTypeIOS,
-            unit: Optional[HealthDataUnit] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_health_data(self, params: WriteHealthDataParams) -> bool:
         """
         Writes generic health data.
 
@@ -1121,36 +824,18 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "value": wrap_param(float(value)),
-                "types": wrap_param(types),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "unit": wrap_param(unit if unit else HealthDataUnit.NO_UNIT),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN)
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_health_data",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def write_health_data_async(
-            self,
-            value: float,
-            start_time: datetime,
-            end_time: datetime,
-            types: HealthDataTypeAndroid | HealthDataTypeIOS,
-            unit: Optional[HealthDataUnit] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def write_health_data_async(self, params: WriteHealthDataParams) -> bool:
         """
         Writes generic health data.
 
@@ -1177,410 +862,122 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "value": wrap_param(float(value)),
-                "types": wrap_param(types),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "unit": wrap_param(unit if unit else HealthDataUnit.NO_UNIT),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN)
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_health_data",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    def write_workout_data(
-            self,
-            activity_type: HealthWorkoutActivityType,
-            start_time: datetime,
-            end_time: datetime,
-            total_energy_burned: Optional[int] = None,
-            total_energy_burned_unit: Optional[HealthDataUnit] = None,
-            total_distance: Optional[int] = None,
-            total_distance_unit: Optional[HealthDataUnit] = None,
-            title: Optional[str] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_workout_data(self, params: WorkoutParams) -> bool:
         """
         Write workout data to Apple Health or Google Health Connect.
 
         :return: True if the workout data was successfully added.
         """
 
-        data = json.dumps(
-            {
-                "activity_type": wrap_param(activity_type),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "total_energy_burned": wrap_param(total_energy_burned),
-                "total_energy_burned_unit": wrap_param(total_energy_burned_unit if total_energy_burned_unit else HealthDataUnit.KILOCALORIE),
-                "total_distance": wrap_param(total_distance),
-                "total_distance_unit": wrap_param(total_distance_unit if total_distance_unit else HealthDataUnit.METER),
-                "title": wrap_param(title),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
+
         result = self.invoke_method(
             method_name="write_workout_data",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    async def write_workout_data_async(
-            self,
-            activity_type: HealthWorkoutActivityType,
-            start_time: datetime,
-            end_time: datetime,
-            total_energy_burned: Optional[int] = None,
-            total_energy_burned_unit: Optional[HealthDataUnit] = None,
-            total_distance: Optional[int] = None,
-            total_distance_unit: Optional[HealthDataUnit] = None,
-            title: Optional[str] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def write_workout_data_async(self, params: WorkoutParams) -> bool:
         """
         Write workout data to Apple Health or Google Health Connect.
 
         :return: True if the workout data was successfully added.
         """
 
-        data = json.dumps(
-            {
-                "activity_type": wrap_param(activity_type),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "total_energy_burned": wrap_param(total_energy_burned),
-                "total_energy_burned_unit": wrap_param(total_energy_burned_unit if total_energy_burned_unit else HealthDataUnit.KILOCALORIE),
-                "total_distance": wrap_param(total_distance),
-                "total_distance_unit": wrap_param(total_distance_unit if total_distance_unit else HealthDataUnit.METER),
-                "title": wrap_param(title),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
+
         result = await self.invoke_method_async(
             method_name="write_workout_data",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    def write_blood_pressure(
-            self,
-            systolic: int,
-            diastolic: int,
-            start_time: datetime,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_blood_pressure(self, params: BloodPressureParams) -> bool:
         """
         Saves a blood pressure record.
 
         :return: True if successful, false otherwise.
         """
 
-        data = json.dumps(
-            {
-                "systolic": wrap_param(int(systolic)),
-                "diastolic": wrap_param(int(diastolic)),
-                "start_time": wrap_param(start_time),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_blood_pressure",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    async def write_blood_pressure_async(
-            self,
-            systolic: int,
-            diastolic: int,
-            start_time: datetime,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def write_blood_pressure_async(self, params: BloodPressureParams) -> bool:
         """
         Saves a blood pressure record.
 
         :return: True if successful, false otherwise.
         """
 
-        data = json.dumps(
-            {
-                "systolic": wrap_param(int(systolic)),
-                "diastolic": wrap_param(int(diastolic)),
-                "start_time": wrap_param(start_time),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_blood_pressure",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    def write_meal(
-            self,
-            meal_type: MealType,
-            start_time: datetime,
-            end_time: datetime,
-            calories_consumed: Optional[float] = None,
-            carbohydrates: Optional[float] = None,
-            protein: Optional[float] = None,
-            fat_total: Optional[float] = None,
-            name: Optional[str] = None,
-            caffeine: Optional[float] = None,
-            vitamin_a: Optional[float] = None,
-            b1_thiamin: Optional[float] = None,
-            b2_riboflavin: Optional[float] = None,
-            b3_niacin: Optional[float] = None,
-            b5_pantothenic_acid: Optional[float] = None,
-            b6_pyridoxine: Optional[float] = None,
-            b7_biotin: Optional[float] = None,
-            b9_folate: Optional[float] = None,
-            b12_cobalamin: Optional[float] = None,
-            vitamin_c: Optional[float] = None,
-            vitamin_d: Optional[float] = None,
-            vitamin_e: Optional[float] = None,
-            vitamin_k: Optional[float] = None,
-            calcium: Optional[float] = None,
-            cholesterol: Optional[float] = None,
-            chloride: Optional[float] = None,
-            chromium: Optional[float] = None,
-            copper: Optional[float] = None,
-            fat_unsaturated: Optional[float] = None,
-            fat_monounsaturated: Optional[float] = None,
-            fat_polyunsaturated: Optional[float] = None,
-            fat_saturated: Optional[float] = None,
-            fat_trans_monoenoic: Optional[float] = None,
-            fiber: Optional[float] = None,
-            iodine: Optional[float] = None,
-            iron: Optional[float] = None,
-            magnesium: Optional[float] = None,
-            manganese: Optional[float] = None,
-            molybdenum: Optional[float] = None,
-            phosphorus: Optional[float] = None,
-            potassium: Optional[float] = None,
-            selenium: Optional[float] = None,
-            sodium: Optional[float] = None,
-            sugar: Optional[float] = None,
-            water: Optional[float] = None,
-            zinc: Optional[float] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_meal(self, params: MealParams) -> bool:
         """
         Saves meal record into Apple Health or Health Connect.
 
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "meal_type": wrap_param(meal_type),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "calories_consumed": wrap_param(float(calories_consumed)),
-                "carbohydrates": wrap_param(float(carbohydrates)),
-                "protein": wrap_param(float(protein)),
-                "fat_total": wrap_param(float(fat_total)),
-                "name": wrap_param(str(name)),
-                "caffeine": wrap_param(float(caffeine)),
-                "vitamin_a": wrap_param(float(vitamin_a)),
-                "b1_thiamin": wrap_param(float(b1_thiamin)),
-                "b2_riboflavin": wrap_param(float(b2_riboflavin)),
-                "b3_niacin": wrap_param(float(b3_niacin)),
-                "b5_pantothenic_acid": wrap_param(float(b5_pantothenic_acid)),
-                "b6_pyridoxine": wrap_param(float(b6_pyridoxine)),
-                "b7_biotin": wrap_param(float(b7_biotin)),
-                "b9_folate": wrap_param(float(b9_folate)),
-                "b12_cobalamin": wrap_param(float(b12_cobalamin)),
-                "vitamin_c": wrap_param(float(vitamin_c)),
-                "vitamin_d": wrap_param(float(vitamin_d)),
-                "vitamin_e": wrap_param(float(vitamin_e)),
-                "vitamin_k": wrap_param(float(vitamin_k)),
-                "calcium": wrap_param(float(calcium)),
-                "cholesterol": wrap_param(float(cholesterol)),
-                "chloride": wrap_param(float(chloride)),
-                "chromium": wrap_param(float(chromium)),
-                "copper": wrap_param(float(copper)),
-                "fat_unsaturated": wrap_param(float(fat_unsaturated)),
-                "fat_monounsaturated": wrap_param(float(fat_monounsaturated)),
-                "fat_polyunsaturated": wrap_param(float(fat_polyunsaturated)),
-                "fat_saturated": wrap_param(float(fat_saturated)),
-                "fat_trans_monoenoic": wrap_param(float(fat_trans_monoenoic)),
-                "fiber": wrap_param(float(fiber)),
-                "iodine": wrap_param(float(iodine)),
-                "iron": wrap_param(float(iron)),
-                "magnesium": wrap_param(float(magnesium)),
-                "manganese": wrap_param(float(manganese)),
-                "molybdenum": wrap_param(float(molybdenum)),
-                "phosphorus": wrap_param(float(phosphorus)),
-                "potassium": wrap_param(float(potassium)),
-                "selenium": wrap_param(float(selenium)),
-                "sodium": wrap_param(float(sodium)),
-                "sugar": wrap_param(float(sugar)),
-                "water": wrap_param(float(water)),
-                "zinc": wrap_param(float(zinc)),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_meal",  # The key name for the flutter case
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def write_meal_async(
-            self,
-            meal_type: MealType,
-            start_time: datetime,
-            end_time: datetime,
-            calories_consumed: Optional[float] = None,
-            carbohydrates: Optional[float] = None,
-            protein: Optional[float] = None,
-            fat_total: Optional[float] = None,
-            name: Optional[str] = None,
-            caffeine: Optional[float] = None,
-            vitamin_a: Optional[float] = None,
-            b1_thiamin: Optional[float] = None,
-            b2_riboflavin: Optional[float] = None,
-            b3_niacin: Optional[float] = None,
-            b5_pantothenic_acid: Optional[float] = None,
-            b6_pyridoxine: Optional[float] = None,
-            b7_biotin: Optional[float] = None,
-            b9_folate: Optional[float] = None,
-            b12_cobalamin: Optional[float] = None,
-            vitamin_c: Optional[float] = None,
-            vitamin_d: Optional[float] = None,
-            vitamin_e: Optional[float] = None,
-            vitamin_k: Optional[float] = None,
-            calcium: Optional[float] = None,
-            cholesterol: Optional[float] = None,
-            chloride: Optional[float] = None,
-            chromium: Optional[float] = None,
-            copper: Optional[float] = None,
-            fat_unsaturated: Optional[float] = None,
-            fat_monounsaturated: Optional[float] = None,
-            fat_polyunsaturated: Optional[float] = None,
-            fat_saturated: Optional[float] = None,
-            fat_trans_monoenoic: Optional[float] = None,
-            fiber: Optional[float] = None,
-            iodine: Optional[float] = None,
-            iron: Optional[float] = None,
-            magnesium: Optional[float] = None,
-            manganese: Optional[float] = None,
-            molybdenum: Optional[float] = None,
-            phosphorus: Optional[float] = None,
-            potassium: Optional[float] = None,
-            selenium: Optional[float] = None,
-            sodium: Optional[float] = None,
-            sugar: Optional[float] = None,
-            water: Optional[float] = None,
-            zinc: Optional[float] = None,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def write_meal_async(self, params: MealParams) -> bool:
         """
         Saves meal record into Apple Health or Health Connect.
 
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "meal_type": wrap_param(meal_type),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "calories_consumed": wrap_param(float(calories_consumed)),
-                "carbohydrates": wrap_param(float(carbohydrates)),
-                "protein": wrap_param(float(protein)),
-                "fat_total": wrap_param(float(fat_total)),
-                "name": wrap_param(str(name)),
-                "caffeine": wrap_param(float(caffeine)),
-                "vitamin_a": wrap_param(float(vitamin_a)),
-                "b1_thiamin": wrap_param(float(b1_thiamin)),
-                "b2_riboflavin": wrap_param(float(b2_riboflavin)),
-                "b3_niacin": wrap_param(float(b3_niacin)),
-                "b5_pantothenic_acid": wrap_param(float(b5_pantothenic_acid)),
-                "b6_pyridoxine": wrap_param(float(b6_pyridoxine)),
-                "b7_biotin": wrap_param(float(b7_biotin)),
-                "b9_folate": wrap_param(float(b9_folate)),
-                "b12_cobalamin": wrap_param(float(b12_cobalamin)),
-                "vitamin_c": wrap_param(float(vitamin_c)),
-                "vitamin_d": wrap_param(float(vitamin_d)),
-                "vitamin_e": wrap_param(float(vitamin_e)),
-                "vitamin_k": wrap_param(float(vitamin_k)),
-                "calcium": wrap_param(float(calcium)),
-                "cholesterol": wrap_param(float(cholesterol)),
-                "chloride": wrap_param(float(chloride)),
-                "chromium": wrap_param(float(chromium)),
-                "copper": wrap_param(float(copper)),
-                "fat_unsaturated": wrap_param(float(fat_unsaturated)),
-                "fat_monounsaturated": wrap_param(float(fat_monounsaturated)),
-                "fat_polyunsaturated": wrap_param(float(fat_polyunsaturated)),
-                "fat_saturated": wrap_param(float(fat_saturated)),
-                "fat_trans_monoenoic": wrap_param(float(fat_trans_monoenoic)),
-                "fiber": wrap_param(float(fiber)),
-                "iodine": wrap_param(float(iodine)),
-                "iron": wrap_param(float(iron)),
-                "magnesium": wrap_param(float(magnesium)),
-                "manganese": wrap_param(float(manganese)),
-                "molybdenum": wrap_param(float(molybdenum)),
-                "phosphorus": wrap_param(float(phosphorus)),
-                "potassium": wrap_param(float(potassium)),
-                "selenium": wrap_param(float(selenium)),
-                "sodium": wrap_param(float(sodium)),
-                "sugar": wrap_param(float(sugar)),
-                "water": wrap_param(float(water)),
-                "zinc": wrap_param(float(zinc)),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_meal",  # The key name for the flutter case
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    def write_audiogram(
-            self,
-            frequencies: List[float],
-            left_ear_sensitivities: List[float],
-            right_ear_sensitivities: List[float],
-            start_time: datetime,
-            end_time: datetime,
-            metadata: Optional[Dict[str, Any]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_audiogram(self, params: AudiogramParams) -> bool:
         """
         Saves audiogram into Apple Health. Not supported on Android.
 
@@ -1592,35 +989,18 @@ class Health(Control):
         if platform == 'android':
             raise ValueError('writeAudiogram is not supported on Android')
 
-        data = json.dumps(
-            {
-                "frequencies": wrap_param(frequencies),
-                "left_ear_sensitivities": wrap_param(left_ear_sensitivities),
-                "right_ear_sensitivities": wrap_param(right_ear_sensitivities),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "metadata": wrap_param(metadata),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_audiogram",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
     async def write_audiogram_async(
-            self,
-            frequencies: List[float],
-            left_ear_sensitivities: List[float],
-            right_ear_sensitivities: List[float],
-            start_time: datetime,
-            end_time: datetime,
-            metadata: Optional[Dict[str, Any]] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+            self, params: AudiogramParams) -> bool:
         """
         Saves audiogram into Apple Health. Not supported on Android.
 
@@ -1632,158 +1012,102 @@ class Health(Control):
         if platform == 'android':
             raise ValueError('writeAudiogram is not supported on Android')
 
-        data = json.dumps(
-            {
-                "frequencies": wrap_param(frequencies),
-                "left_ear_sensitivities": wrap_param(left_ear_sensitivities),
-                "right_ear_sensitivities": wrap_param(right_ear_sensitivities),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "metadata": wrap_param(metadata),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_audiogram",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    def write_menstruation_flow(
-            self,
-            flow: MenstrualFlow,
-            start_time: datetime,
-            end_time: datetime,
-            is_start_of_cycle: bool,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def write_menstruation_flow(self, params: MenstrualFlowParams) -> bool:
         """
         Save menstruation flow into Apple Health and Google Health Connect.
 
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "flow": wrap_param(flow),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "is_start_of_cycle": wrap_param(bool(is_start_of_cycle)),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_menstruation_flow",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
     async def write_menstruation_flow_async(
-            self,
-            flow: MenstrualFlow,
-            start_time: datetime,
-            end_time: datetime,
-            is_start_of_cycle: bool,
-            recording_method: Optional[RecordingMethod] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+            self, params: MenstrualFlowParams) -> bool:
         """
         Save menstruation flow into Apple Health and Google Health Connect.
 
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "flow": wrap_param(flow),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-                "is_start_of_cycle": wrap_param(bool(is_start_of_cycle)),
-                "recording_method": wrap_param(recording_method if recording_method else RecordingMethod.UNKNOWN),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_menstruation_flow",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
         return result == "true"
 
-    def write_insulin_delivery(
-            self,
-            units: float,
-            reason: InsulinDeliveryReason,
-            start_time: datetime,
-            end_time: datetime,
-            wait_timeout: float = 25
-    ):
+    def write_insulin_delivery(self, params: InsulinDeliveryParams):
         """
         Saves insulin delivery record into Apple Health.
+        Returns true if successful, false otherwise.
+
+        :param units: - the number of units of insulin taken.
+        :param reason: - the insulin reason, basal or bolus.
+        :param start_time: - the start time when the meal was consumed.
+        :param end_time: - the end time when the meal was consumed. It must be equal to or earlier than [end_time].
+        :param wait_timeout: The maximum time to wait for the method to complete. Defaults to 25 seconds.
 
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "units": wrap_param(float(units)),
-                "reason": wrap_param(reason),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="write_insulin_delivery",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def write_insulin_delivery_async(
-            self,
-            units: float,
-            reason: InsulinDeliveryReason,
-            start_time: datetime,
-            end_time: datetime,
-            wait_timeout: float = 25
-    ):
+    async def write_insulin_delivery_async(self, params: InsulinDeliveryParams):
         """
-        No description.
+        Saves insulin delivery record into Apple Health.
+        Returns true if successful, false otherwise.
+
+        :param units: - the number of units of insulin taken.
+        :param reason: - the insulin reason, basal or bolus.
+        :param start_time: - the start time when the meal was consumed.
+        :param end_time: - the end time when the meal was consumed. It must be equal to or earlier than [end_time].
+        :param wait_timeout: The maximum time to wait for the method to complete. Defaults to 25 seconds.
+
+        :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "units": wrap_param(float(units)),
-                "reason": wrap_param(reason),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time),
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="write_insulin_delivery",
             arguments={"data": data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    def remove_duplicates(
-            self,
-            points: list[dict],
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
+    def remove_duplicates(self, params: RemoveDuplicatesParams) -> list[dict]:
         """
         Removes duplicate HealthDataPoint entries using the Dart side method.
 
@@ -1792,22 +1116,18 @@ class Health(Control):
         :return: A list of deduplicated HealthDataPoint dictionaries.
         """
 
-        data = json.dumps(wrap_param(points))
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="remove_duplicates",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return json.loads(result or "[]")
 
-    async def remove_duplicates_async(
-            self,
-            points: list[dict],
-            wait_timeout: Optional[float] = 25
-    ) -> list[dict]:
+    async def remove_duplicates_async(self, params: RemoveDuplicatesParams) -> list[dict]:
         """
         Asynchronously removes duplicate HealthDataPoint entries using the Dart side method.
 
@@ -1816,24 +1136,18 @@ class Health(Control):
         :return: A list of deduplicated HealthDataPoint dictionaries.
         """
 
-        data = json.dumps(wrap_param(points))
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="remove_duplicates",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return json.loads(result or "[]")
 
-    def delete(
-            self,
-            types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: Optional[datetime] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def delete(self, params: DeleteParams) -> bool:
         """
         Deletes all records of the given [type] for a given period of time.
 
@@ -1845,30 +1159,18 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "types": wrap_param(types if types else ""),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time if end_time else None)
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="delete_by_uuid",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def delete_async(
-            self,
-            types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType],
-            start_time: datetime,
-            end_time: Optional[datetime] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def delete_async(self, params: DeleteParams) -> bool:
         """
         Deletes all records of the given [type] for a given period of time.
 
@@ -1880,29 +1182,18 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "types": wrap_param(types if types else ""),
-                "start_time": wrap_param(start_time),
-                "end_time": wrap_param(end_time if end_time else None)
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="delete_by_uuid",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    def delete_by_uuid(
-            self,
-            uuid: str,
-            types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    def delete_by_uuid(self, params: DeleteByUUIDParams) -> bool:
         """
         Deletes a specific health record by its UUID.
 
@@ -1915,28 +1206,18 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "uuid": wrap_param(str(uuid)),
-                "types": wrap_param(types if types else "")
-            }
-        )
+        data = params.to_wrapped()
 
         result = self.invoke_method(
             method_name="delete_by_uuid",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"
 
-    async def delete_by_uuid_async(
-            self,
-            uuid: str,
-            types: Optional[HealthDataTypeAndroid | HealthDataTypeIOS | HealthWorkoutActivityType] = None,
-            wait_timeout: Optional[float] = 25
-    ) -> bool:
+    async def delete_by_uuid_async(self, params: DeleteByUUIDParams) -> bool:
         """
         Deletes a specific health record by its UUID.
 
@@ -1949,18 +1230,13 @@ class Health(Control):
         :return: True if successful, False otherwise.
         """
 
-        data = json.dumps(
-            {
-                "uuid": wrap_param(str(uuid)),
-                "types": wrap_param(types if types else "")
-            }
-        )
+        data = params.to_wrapped()
 
         result = await self.invoke_method_async(
             method_name="delete_by_uuid",
             arguments={'data': data},
             wait_for_result=True,
-            wait_timeout=wait_timeout
+            wait_timeout=params.wait_timeout
         )
 
         return result == "true"

@@ -1,5 +1,10 @@
 from .flet_health import (
+    ## control
+
     Health,
+
+    ## enums
+
     HealthDataTypeAndroid,
     HealthDataTypeIOS,
     HealthWorkoutActivityType,
@@ -8,5 +13,24 @@ from .flet_health import (
     HealthDataUnit,
     MealType,
     MenstrualFlow,
-    HealthConnectSdkStatus
+    HealthConnectSdkStatus,
+
+    ## schemas
+
+    HealthAuthorizationParams,
+    StepsIntervalParams,
+    HealthAggregateDataParams,
+    HealthIntervalDataParams,
+    BloodOxygenParams,
+    BloodPressureParams,
+    WriteHealthDataParams,
+    GetHealthDataParams,
+    WorkoutParams,
+    MealParams,
+    AudiogramParams,
+    MenstrualFlowParams,
+    InsulinDeliveryParams,
+    RemoveDuplicatesParams,
+    DeleteParams,
+    DeleteByUUIDParams
 )
